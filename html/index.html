@@ -95,8 +95,8 @@
                         </td>
                     </tr>
                     <tr class="row">
-                        <td><a href="http://www.oracle.com/technetwork/java/javaee/jsp/index.html">JSP</a></td>
-                        <td>Template-Sprache<br/><b>Alternativen:</b><a href="http://www.thymeleaf.org/">Thymeleaf</a>, <a
+                        <td><a href="http://www.thymeleaf.org/">Thymeleaf</a></td>
+                        <td>Template-Sprache<br/><b>Alternativen:</b> <a href="http://www.oracle.com/technetwork/java/javaee/jsp/index.html">JSP</a>, <a
                                 href="https://velocity.apache.org/">Velocity</a>, <a href="http://freemarker.org/">Freemarker</a>
                         </td>
                     </tr>
@@ -105,7 +105,7 @@
             </div>
 
 
-
+        <div>
             <!--Schritt 1 - Projekt erstellen-->
             <div class="well">
 
@@ -114,23 +114,20 @@
 
                 <div>
 
-                    <p>Zunächst erstellen wir ein neues Maven-Projekt. Dazu in einem Terminal folgendes Ausführen:<br/>(Im
-                        Allgemeinen
-                        wird hier davon ausgegangen, dass das Tutorial unter Unix
-                        durchgearbeitet wird und die verwendete Shell - soweit es einen Unterschied macht - bash ist. Windows-Nutzer
-                        müssen ggf. Umdenken oder msys verwenden.)</p>
-                    <pre><code class="bash">mvn -B archetype:generate \
-    -DarchetypeGroupId=org.springframework.boot \
-    -DarchetypeArtifactId=spring-boot-sample-web-jsp-archetype \
-    -DgroupId=de.unibielefeld.techfak.tdpe \
-    -DartifactId=blog
-</code></pre>
+                    <p>Das Erzeugen eins Projekts nehmen wir euch an dieser Stelle ab. Wer nachlesen möchte, wie man ein
+                    einfaches Spring Boot Projekt mit Thymeleaf aufsetzen kann, findet
+                        <a href="https://spring.io/guides/gs/serving-web-content/">hier</a> weitere Informationen.
+                    Für uns reicht es, dass Repo des Sommersemester 2016 Projekts zu clonen und auf den korrekten Branch
+                    zu wechseln:</p>
+                    <pre>
+<code class="bash">git clone https://tdpe.techfak.uni-bielefeld.de/git/tdpe-sommer-2016
+cd tdpe-sommer-2016
+git checkout thymeleaf-starter</code></pre>
 
                     <p>Wie das hier generierte Projekt im Detail aussieht, sehen wir uns im nächsten Schritt an. Vorher probieren
                         wir
                         aber noch aus, was das neue Projekt schon kann:</p>
-                    <pre><code class="bash">cd blog
-mvn spring-boot:run</code></pre>
+                    <pre><code class="bash">mvn spring-boot:run</code></pre>
 
                 </div>
 
@@ -150,7 +147,7 @@ mvn spring-boot:run</code></pre>
     =========|_|==============|___/=/_/_/_/
     :: Spring Boot :: (v1.0.2.RELEASE)
 
-    2015-02-19 20:10:11.430 INFO 7824 --- [lication.main()] d.u.t.tdpe.jsp.SampleWebJspApplication : Starting
+    2015-02-19 20:10:11.430 INFO 7824 --- [lication.main()] d.u.t.tdpe.thymeleaf.SampleWebJspApplication : Starting
     SampleWebJspApplication on Themis with PID 7824 (c:\Users\XXXX\Documents\git\blog\target\classes started by jkrafczy
     in c:\Users\XXXX\Documents\git\blog)
     2015-02-19 20:10:11.458 INFO 7824 --- [lication.main()] ationConfigEmbeddedWebApplicationContext : Refreshing
@@ -174,7 +171,7 @@ mvn spring-boot:run</code></pre>
     [/**/favicon.ico] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
     2015-02-19 20:10:12.953 INFO 7824 --- [lication.main()] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped
     "{[/],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public java.lang.String
-    de.unibielefeld.techfak.tdpe.jsp.WelcomeController.welcome(java.util.Map&lt;java.lang.String, java.lang.Object&gt;)
+    de.unibielefeld.techfak.tdpe.thymeleaf.WelcomeController.welcome(java.util.Map&lt;java.lang.String, java.lang.Object&gt;)
     2015-02-19 20:10:12.963 INFO 7824 --- [lication.main()] o.s.w.s.handler.SimpleUrlHandlerMapping : Mapped URL path
     [/webjars/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
     2015-02-19 20:10:12.964 INFO 7824 --- [lication.main()] o.s.w.s.handler.SimpleUrlHandlerMapping : Mapped URL path
@@ -184,11 +181,10 @@ mvn spring-boot:run</code></pre>
     2015-02-19 20:10:13.055 INFO 7824 --- [lication.main()] s.b.c.e.t.TomcatEmbeddedServletContainer : <b>Tomcat started
     on
     port(s): 8080/http</b>
-    2015-02-19 20:10:13.057 INFO 7824 --- [lication.main()] d.u.t.tdpe.jsp.SampleWebJspApplication : Started
+    2015-02-19 20:10:13.057 INFO 7824 --- [lication.main()] d.u.t.tdpe.thymeleaf.SampleWebJspApplication : Started
     SampleWebJspApplication in 1.989 seconds (JVM running for 3.802)
 </code></pre>
 
-                <hr>
 
                 <p>Besonders wichtig ist hier der fett markierte Teil - Die Anwendung hat automatisch einen Tomcat gestartet und
                     ist
@@ -196,39 +192,15 @@ mvn spring-boot:run</code></pre>
 
                 <p>Ruft man die Webapplikation nun im Browser auf, sollte sich in etwa folgendes Bild zeigen:</p>
                 <img src="img/step1-webapp.png" class="center-block" />
-
-                <hr>
-
-                <h3>
-                    Java 8
-                </h3>
-
-                <p>
-                    Das erstellte Projekt hat bisher Java 6 voreingestellt. Da seit dem einige sinnvolle Features hinzugekommen sind, wird die Javaversion auf 1.8 geändert:
-                </p>
-                <p>
-
-                </p>
-
-                <p>Dazu wird in der pom.xml eine java.version property hinzugefügt.
-                    <!-- Dies könnte die Teilnehmer verwirren - Der Block ist in der Datei bereits vorhanden und muss *verändert* werden, nicht
-                    hinzugefügt! -->
-                    Die &lt;properties&gt;-Sektion der pom.xml sollte nun so aussehen:</p>
-                <pre><code class="xml">&lt;properties&gt;
-    &lt;main.basedir&gt;${basedir}/../..&lt;/main.basedir&gt;
-    &lt;m2eclipse.wtp.contextRoot&gt;/&lt;/m2eclipse.wtp.contextRoot&gt;
-    &lt;java.version&gt;1.8&lt;/java.version&gt;
-&lt;/properties&gt;</code> </pre>
-            </div>
-            <hr>
-
+        </div>
+        <hr>
             <!--Schritt 2 - Code verstehen-->
             <div>
                 <div class="well">
                     <h2>Schritt 2 - Erzeugten Code verstehen</h2>
 
-                    <h3>SampleWebJspApplication.java</h3>
-                    Das Projekt enthält zwei Java-Klassen: Die erste die wir uns ansehen wollen ist SampleWebJspApplication und
+                    <h3><code>SampleWebJspApplication.java</code></h3>
+                    Das Projekt enthält zwei Java-Klassen: Die erste die wir uns ansehen wollen ist <code>SampleWebJspApplication</code> und
                     sollte
                     wie folgt aussehen:
                     <pre><code class="java">@Configuration
@@ -267,7 +239,7 @@ public class SampleWebJspApplication extends SpringBootServletInitializer {
                         <dt>
                         <div class="code-java">@ComponentScan</div>
                         </dt>
-                        <dd>Suche im Classpath nach Klassen die z.B. mit @Controller oder @Service annotiert sind und mache sie als
+                        <dd>Suche im Classpath nach Klassen die z.B. mit <span class="code-java">@Controller</span> oder <span class="code-java">@Service</span> annotiert sind und mache sie als
                             Beans verfügbar
                         </dd>
                     </dl>
@@ -283,8 +255,11 @@ protected SpringApplicationBuilder configure(SpringApplicationBuilder applicatio
 </code></pre>
                     <p>
                         <!-- Was ist ein Tomcat? => Glossar, Beschreibung, externer Link -->
-                        Dies ist der Einstiegspunkt für die Applikation, wenn sie auf einem separatem Tomcat deployed wurde.
-                        Ähnlich zur Verwendung von SpringApplication.run() in der unten erklärten main-Methode wird hier Spring Boot
+                        Dies ist der Einstiegspunkt für die Applikation, wenn sie auf einem separatem Tomcat deployed wurde. Ein Tomcat ist
+                        ein Open-Source-Webserver, der es erlaubt in Java geschriebene Anwendungen auf Servlet- oder JSP-Basis auszuführen.
+                        (Weitere Informationen findet man bei <a href="https://de.wikipedia.org/wiki/Apache_Tomcat">Wikipedia</a> und auf der
+                        <a href="http://tomcat.apache.org/">Homepage</a> des Projekts)
+                        Ähnlich zur Verwendung von <span class="code-java">SpringApplication.run()</span> in der unten erklärten main-Methode wird hier Spring Boot
                         darüber Informiert, wo es anfangen soll nach Konfiguration zu suchen.
                     </p>
 
@@ -295,10 +270,10 @@ protected SpringApplicationBuilder configure(SpringApplicationBuilder applicatio
                     <p>
                         Dies ist der Einstiegspunkt für die Applikation, wenn sie als .jar gebaut wurde.
                         SpringApplication.run() erwartet als Parameter einen oder mehrere Quellen von Konfigurationsdaten - z.B.
-                        mit @Configuration annotierte Klassen.
+                        mit <span class="code-java">@Configuration</span> annotierte Klassen.
                     </p>
 
-                    <h3>WelcomeController.java</h3>
+                    <h3><code>WelcomeController.java</code></h3>
                     <pre><code class="java">@Controller
 public class WelcomeController {
 
@@ -333,14 +308,14 @@ public class WelcomeController {
     }
 </code></pre>
                     <p>
-                        Das @RequestMapping("/") deutet an, dass diese Methode aufgerufen werden soll wenn eine HTTP-Anfrage auf
+                        Das <span class="code-java">@RequestMapping("/")</span> deutet an, dass diese Methode aufgerufen werden soll wenn eine HTTP-Anfrage auf
                         den Pfad "/" stattfindet. <br/>
-                        Die Methode gibt den Namen einer view zurück, die für die Antwort an den Browser dargestellt werden soll. Der
+                        Die Methode gibt den Namen einer View zurück, die für die Antwort an den Browser dargestellt werden soll. Der
                         zurückgelieferte Viewname "welcome" wird in dieser Anwendung
-                        letztendlich auf src/main/java/webapp/WEB-INF/jsp/welcome.jsp abgebildet.<br/>
+                        letztendlich auf <code>src/main/resources/templates/welcome.html</code> abgebildet.<br/>
                         <!-- wie funktioniert das letztendlich? -->
-                        Das als parameter übergebene Model (hier vom typ java.util.Map, in der Regel eher vom Typ
-                        org.springframework.ui.Model) wird mit Daten befüllt, die in der View angezeigt werden sollen.
+                        Das als parameter übergebene Model (hier vom typ <code>java.util.Map</code>, in der Regel eher vom Typ
+                        <code>org.springframework.ui.Model</code>) wird mit Daten befüllt, die in der View angezeigt werden sollen.
                     </p>
 
 
@@ -348,100 +323,59 @@ public class WelcomeController {
     private String message = "Hello World";
 </code></pre>
                     <p>
-                        Die Initialisierung von message mit ' = "Hello World"' hat hier keine Bedeutung und kann auch weg gelassen
+                        Die Initialisierung von message mit <span class="code-java">= "Hello World"</span> hat hier keine Bedeutung und kann auch weg gelassen
                         werden.
                         <br/>
-                        Spannend ist vor allem die Annotation: Mit @Value("${application.message}") wird Spring angewiesen, diese
-                        Variable mit einem Wert aus der Datei <i>application.properties</i> vorzubelegen, der unter dem Schlüssel <i>application.message</i>
+                        Spannend ist vor allem die Annotation: Mit <span class="code-java">@Value("${application.message}")</span> wird Spring angewiesen, diese
+                        Variable mit einem Wert aus der Datei <code>application.properties</code> vorzubelegen, der unter dem Schlüssel <i>application.message</i>
                         zu finden ist. <br/>
-                        Durch das hinzufügen von ":Hello World" in der Annotation wird "Hello World" als Standardbelegung angenommen,
+                        Durch das hinzufügen von <span class="code-java">":Hello World"</span> in der Annotation wird <span class="code-java">"Hello World"</span> als Standardbelegung angenommen,
                         falls
-                        der gesuchte Schlüssel in den application.properties nicht gefunden wurde. <br/>
-                        Würde die Standardbelegung im @Value weggelassen, gäbe es statt dessen beim Anwendungsstart eine Exception wenn
+                        der gesuchte Schlüssel in den <code>application.properties</code> nicht gefunden wurde. <br/>
+                        Würde die Standardbelegung im <span class="code-java">@Value</span> weggelassen, gäbe es statt dessen beim Anwendungsstart eine Exception wenn
                         die
                         entsprechende Property fehlt.
                     </p>
 
-                    <h3>application.properties</h3>
+                    <h3><code>application.properties</code></h3>
+                    <p>
+                        Die Datei <code>application.properties</code> findet man unter <code>src/main/resources</code>.
                     <!-- Wo liegt die Datei? -->
-                    <pre><code>    spring.view.prefix: /WEB-INF/jsp/
-    spring.view.suffix: .jsp
-    application.message: Hello Phil
+                    <pre><code>     application.message: Hello Phil
 </code></pre>
-                    <p>Die ersten beiden Zeilen geben an, wie von Viewnamen auf Templates, in diesem Beispiel JSPs, abgebildet
-                        wird.
-                        <br/>
-                        Die application.message-Zeile liefert die Belegung für das per @Value() befüllte Feld von
-                        SampleWebJspApplication.
+                    <p>
+                        Diese Zeile liefert die Belegung für das per <span class="code-java">@Value()</span> befüllte Feld von
+                        <code>SampleWebJspApplication</code>.
                     </p>
 
-                    <h3>JSP</h3>
-                    <!-- Wo liegt die Datei? -->
+                    <h3>View</h3>
+                    <p>
+                        Das einzige Template (auch View genannt) findet sich unter <code>src/main/resources/templates</code> und heißt <code>welcome.html</code>.
                     <pre><code class="html">&lt;!DOCTYPE html&gt;
-
-&lt;%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%&gt;
-&lt;%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%&gt;
-
-&lt;html lang="en"&gt;
-
-    &lt;body&gt;
-        &lt;c:url value="/resources/text.txt" var="url"/&gt;
-        &lt;spring:url value="/resources/text.txt" htmlEscape="true" var="springUrl" /&gt;
-        Spring URL: ${springUrl} at ${time}
-        &lt;br&gt;
-        JSTL URL: ${url}
-        &lt;br&gt;
-        Message: ${message}
-    &lt;/body&gt;
-
+&lt;html xmlns:th="http://www.thymeleaf.org"&gt;
+&lt;head&gt;
+    &lt;title&gt;Hello World!&lt;/title&gt;
+    &lt;meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;p th:text="${message} + '!' " /&gt;
+&lt;p th:text="'Current time: ' + ${time}"/&gt;
+&lt;/body&gt;
 &lt;/html&gt;
 </code></pre>
                     <p>
                         Im Kern handelt es sich bei der Datei um eine HTML-Datei, mit einigen Erweiterungen. Dementsprechend
-                        hat sie die übliche Struktur eines HTML Dokuments mit einem HTML5 Doctype.
+                        hat sie die übliche Struktur eines HTML Dokuments mit einem HTML5 Doctype. Ein Vorteil von Thymeleaf
+                        ist an dieser Stelle, dass diese Datei auch ohne das Auflösen von Variablen oder Tags im Browser
+                        anzeigbar ist.
                     </p>
 
                     <p>
-                        Die beiden &lt;@taglib ...&gt;-Zeilen geben an, dass bestimmte Gruppen von JSP-Tags in dieser
-                        Datei verfügbar sein sollen. Die Tag-Bibliothek mit dem Präfix "c" entspricht der JSTL-Core-Taglib,
-                        die allgemeine Grundfunktionen für JSPs anbietet, z.B. Verzweigungen, Schleifen und Textformatierung.
-                        Die Tag-Bibliothek mit dem Präfix "spring" bietet einige darüber hinaus gehende Funktionen, unter Anderem
-                        zur Ausgabe von Übersetzungstexten und Escaping von HTML in Texten zur sicheren Ausgabe.
+                        Dieses Template zeigt vor allem, wie man auf Variablen zugreift, die entweder im Controller ins Model 
+                        eingefügt worden sind, oder innerhalb der Template definiert wurden: Dazu schreibt man <span class="code-html">${variablenname}</span>. 
+                        Handelt es sich bei der Variablen nicht um einen String (z.B. <code>time</code>, was im Controller als ein 
+                        <span class="code-java">java.util.Date</code> erzeugt wurde), wird sie zur Ausgabe mittels ihrer <span class="code-java">toString()</span>-Methode formatiert. 
                     </p>
-
-                    <p>
-                        Dokumentation für die beiden Tag-Bibliotheken sind unter <a
-                            href="http://docs.oracle.com/javaee/5/jstl/1.1/docs/tlddocs/c/tld-summary.html">docs.oracle.com [JSTL
-                            Core]</a> und <a
-                            href="http://docs.spring.io/spring/docs/current/spring-framework-reference/html/spring.tld.html">docs.spring.io
-                            [spring]</a> zu finden.
-                    </p>
-
-                    <p>
-                        Die ersten beiden Zeilen unter &lt;body&gt; demonstrieren zwei Arten, URLs zur Verwendung z.B. in Links oder
-                        Formularen
-                        zu formatieren. Da die Anwendung auf dem Applikationsserver eventuell unter einem (während der Enwicklung
-                        nicht
-                        bekannten) Pfad-Präfix
-                        gehostet werden kann, werden URLs innerhalb der Anwendung in der Regel nicht direkt in die Templates
-                        geschrieben, sondern mittels c:url oder ähnlichem
-                        sichergestellt dass die URL um ein gegebenenfalls fehlendes Präfix zu ergänzen. In einer Spring-Anwendung
-                        bietet
-                        es sich an, das
-                        etwas flexiblere spring:url zu benutzen.
-                    </p>
-
-                    <p>Beide Varianten erlauben die URL entweder direkt als Ausgabe des Tags zu erzeugen (z.B. <span
-                            class="code-html">&lt;a href="&lt;c:url value="/resources/text.txt"/&gt;"&gt;linktext&lt;/a&gt;</span>,
-                        was hässlich ist) oder
-                        die erzeugte URL statt dessen in eine Variable zu speichern, wie es im Beispiel oben geschieht.</p>
-
-                    <p>Zusätzlich zum Import und der Verwendung von Tag-Bibliotheken zeigt die Template natürlich auch, wie man auf
-                        Variablen zugreift, die entweder im Controller ins Model eingefügt worden sind, oder innerhalb der Template
-                        definiert wurden: Dazu schreibt man ${variablenname}. Handelt es sich bei der Variablen nicht um einen
-                        String
-                        (z.B. "time", was im Controller als ein java.util.Date erzeugt wurde), wird sie zur Ausgabe mittels ihrer
-                        toString()-Methode formatiert.</p>
 
                 </div>
 
@@ -452,12 +386,13 @@ public class WelcomeController {
                             <ul>
                                 <li>Die Anwendung verwendet generell die Standardeinstellungen die von Spring Boot vorgeschlagen werden
                                 </li>
-                                <li>Bei Anfragen auf dem Pfad / wird die Datei welcome.jsp mit einem Datum und einer Nachricht versorgt und
+                                <li>Bei Anfragen auf dem Pfad / wird die Datei <code>welcome.html</code> mit einem Datum und einer Nachricht versorgt und
                                     gerendert
                                 </li>
-                                <li>Konfigurationsdaten liegen in application.properties</li>
-                                <li>Als Templatesprache wird JSP verwendet. Die Beispielseite zeigt, wie man einfachen Text ausgibt und URLs
-                                    formatiert
+                                <li>Konfigurationsdaten liegen in <code>application.properties</code></li>
+                                <li>Als Templatesprache wird Thymeleaf verwendet. Die Beispielseite zeigt, wie man einfachen Text ausgibt und 
+                                    Daten vom Java-Teil eurer Anwendung (das sogenannte Backend) in den HTML-Teil eurer Anwendung (das 
+                                    sogenannte Frontend) transferiert.
                                 </li>
                             </ul>
                     </div>
@@ -476,10 +411,9 @@ public class WelcomeController {
                         Um später einzelne Blogeinträge ansprechen zu können, brauchen diese zusätzlich noch eine ID. Diese ist, um möglichst variabel zu sein, auch ein String.
                     </p>
 
-                    <p>Im Package de.unibielefeld.techfak.tdpe.jsp.domain wird dazu die Klasse BlogPost erstellt:</p>
-                    <!-- Erwähnen: Das Package muss erst erstellt werden! -->
-                    <!-- Erwähnen: Das Package muss erst erstellt werden! -->
-
+                    <p>Im Package <code>de.unibielefeld.techfak.tdpe.thymeleaf.domain</code> (muss erst noch erstellt werden!) wird dazu die 
+                        Klasse <code>BlogPost</code> erstellt:</p>
+                    
                     <pre><code class="java">public class BlogPost {
     private final String id;
     private final String title;
@@ -508,62 +442,37 @@ public class WelcomeController {
 
                     <p>
                         Um die BlogPosts anzeigen zu können, wird eine passende View benötigt.
-                        Dazu wird in src/main/webapp/WEB-INF/jsp/ die Datei index.jsp erstellt:
+                        Dazu wird in <code>src/resources/templates</code> die Datei index.html erstellt:
                     </p>
 
                     <pre><code class="html">&lt;!DOCTYPE html&gt;
+&lt;html xmlns:th="http://www.thymeleaf.org"&gt;
 
-&lt;%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%&gt;
-&lt;%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%&gt;
+&lt;body&gt;
 
-&lt;html lang="en"&gt;
+&lt;h1&gt;BlogPosts&lt;/h1&gt;
+&lt;div&gt;
+    &lt;table&gt;
+        &lt;tr th:each="post:${blogPosts}"&gt;
+            &lt;h2 th:text="${post.title}"/&gt;
+            &lt;p th:text="${post.text}"/&gt;
+        &lt;/tr&gt;
+    &lt;/table&gt;
+&lt;/div&gt;
+&lt;/body&gt;
 
-    &lt;body&gt;
-    
-        &lt;h1&gt;BlogPosts&lt;/h1&gt;
-    
-        &lt;%--@elvariable id="blogPosts" type="java.util.List&lt;de.unibielefeld.techfak.tdpe.jsp.domain.BlogPost&gt;" --%&gt;
-        &lt;c:forEach items="${blogPosts}" var="post"&gt;
-            &lt;div&gt;
-                &lt;h2>&lt;c:out value="${post.title}"/&gt;&lt;/h2&gt;
-                &lt;c:out value="${post.text}"/&gt;
-            &lt;/div&gt;
-        &lt;/c:forEach&gt;
-    &lt;/body&gt;
-
-&lt;/html&gt;
-</code></pre>
+&lt;/html&gt;</code></pre>
 
                     <p>
-                        Diese ist ähnlich aufgebaut wie die welcome.jsp aus Schritt 2, enthält jedoch einige zusätzliche Dinge:
+                        Diese ist ähnlich aufgebaut wie die welcome.html aus Schritt 2, enthält jedoch zusätzlich die Verwendung
+                        einer for-each-Schleife aus Thymeleaf. Genauer wird hier über den &lt;table&gt;-Tag verkündet, dass eine 
+                        Tabelle erstellt werden soll. Spalten der Tabelle starten jeweils mit einem &lt;tr&gt;-Tag in dem wir 
+                        zusätzlich mittels Thymeleaf (th:each) eine Schleife eingebaut haben. Wir wollen hier über blogPosts 
+                        iterieren, die uns später der Controller liefern wird. Einzelne Posts können wir dann innerhalb der
+                        Tabellenspalte mit <i>post</i> ansprechen und uns auch Titel und Inhalt holen und anzeigen lassen.
+                        Durch die Verwendung von for-each wird also für alle in blogPosts vorhandenen Posts eine Tabellenspalte
+                        mit Titel und Inhalt angelegt.
                     </p>
-                    <p>
-                        Der @elvariable-Kommentar wird von IntelliJ IDEA ausgewertet, um korrekte Auto-Completion für die Variable
-                        blogPosts liefern zu können. Wir erklären der IDE damit,
-                        dass die (im Controller erzeugte) Variable blogPosts vom Typ List&lt;BlogPost&gt; ist. Zumindest Eclipse
-                        kann
-                        mit diesen Kommentaren leider nicht umgehen.
-                    </p>
-
-                    <p>
-                        Direkt darunter findet sich eine Zeile mit &lt;c:forEach&gt; - dies ist eine der in Schritt 2 erwähnten
-                        Kontrollstrukturen aus der JSTL-Core Tagbibliothek. Der Inhalt des
-                        c:forEach-Blocks wird für jedes vom Ausdruck ${blogPosts} zurückgelieferte Element einmal durchgeführt, und
-                        das
-                        jeweilige Element in der Laufvariable post verfügbar gemacht. Also ein ganz normales for-each, so wie in
-                        Java.
-                    </p>
-
-                    <p>Zur Ausgabe des Blog-Titels und -texts wird hier c:out verwendet, statt wie in welcome.jsp die Variable
-                        einfach
-                        nur in ${} einzuschlie&szlig;en.
-                        Dies dient dazu, eventuell vorhandenes HTML im Blogeintrag zu escapen, um Sicherheitslücken (<a
-                           target="_blank" href="http://en.wikipedia.org/wiki/Cross-site_scripting">XSS</a>) zu vermeiden und korrekte
-                        Darstellung
-                        einiger Zeichen wie
-                        &lt; oder &amp; sicherzustellen.
-                    </p>
-
                 </div>
                 <hr>
             </div>
@@ -580,10 +489,10 @@ public class WelcomeController {
                     </p>
 
                     <p>
-                        Dazu wird in de.unibielefeld.techfak.tdpe.jsp die Klasse BlogController erstellt:
+                        Dazu wird in <code>de.unibielefeld.techfak.tdpe.thymeleaf</code> die Klasse <code>BlogController</code> erstellt:
                     </p>
 
-                    <pre><code class="java">import de.unibielefeld.techfak.tdpe.jsp.domain.BlogPost;
+                    <pre><code class="java">import de.unibielefeld.techfak.tdpe.thymeleaf.domain.BlogPost;
 import java.util.LinkedList;
 import java.util.List;
 import org.springframework.stereotype.Controller;
@@ -631,6 +540,7 @@ public class BlogController {
                         Mit <code class="bash">mvn spring-boot:run</code> kann man das Priojekt jetzt bauen und starten.
                         Versucht man dies, startet Spring zwar, bricht dann jedoch mit einer langen Fehlermelung ab:
                     </p>
+                    <p>(der Stacktrace wurde etwas gekürzt)</p>
 
                     <!-- Hinweis darauf, dass der Stacktrace gekürzt wurde [mind. ein Caused By fehlt]-->
                     <pre><code class="bash">[WARNING] 
@@ -642,9 +552,9 @@ java.lang.reflect.InvocationTargetException
 	at org.springframework.boot.maven.RunMojo$LaunchRunner.run(RunMojo.java:300)
 	at java.lang.Thread.run(Thread.java:745)
 Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'requestMappingHandlerMapping' defined in class path resource [org/springframework/web/servlet/config/annotation/DelegatingWebMvcConfiguration.class]: Invocation of init method failed; nested exception is java.lang.IllegalStateException: Ambiguous mapping found. Cannot map 'welcomeController' bean method 
-public java.lang.String de.unibielefeld.techfak.tdpe.jsp.WelcomeController.welcome(java.util.Map&lt;java.lang.String, java.lang.Object&gt;)
+public java.lang.String de.unibielefeld.techfak.tdpe.thymeleaf.WelcomeController.welcome(java.util.Map&lt;java.lang.String, java.lang.Object&gt;)
 to {[/],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}: There is already 'blogController' bean method
-public java.lang.String de.unibielefeld.techfak.tdpe.jsp.BlogController.index(org.springframework.ui.Model) mapped.
+public java.lang.String de.unibielefeld.techfak.tdpe.thymeleaf.BlogController.index(org.springframework.ui.Model) mapped.
 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1553)
 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:539)
 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:475)
@@ -660,12 +570,12 @@ public java.lang.String de.unibielefeld.techfak.tdpe.jsp.BlogController.index(or
 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:311)
 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:909)
 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:898)
-	at de.unibielefeld.techfak.tdpe.jsp.SampleWebJspApplication.main(SampleWebJspApplication.java:37)
+	at de.unibielefeld.techfak.tdpe.thymeleaf.SampleWebJspApplication.main(SampleWebJspApplication.java:37)
 	... 6 more
 Caused by: java.lang.IllegalStateException: Ambiguous mapping found. Cannot map 'welcomeController' bean method 
-public java.lang.String de.unibielefeld.techfak.tdpe.jsp.WelcomeController.welcome(java.util.Map&lt;java.lang.String, java.lang.Object&gt;)
+public java.lang.String de.unibielefeld.techfak.tdpe.thymeleaf.WelcomeController.welcome(java.util.Map&lt;java.lang.String, java.lang.Object&gt;)
 to {[/],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}: There is already 'blogController' bean method
-public java.lang.String de.unibielefeld.techfak.tdpe.jsp.BlogController.index(org.springframework.ui.Model) mapped.
+public java.lang.String de.unibielefeld.techfak.tdpe.thymeleaf.BlogController.index(org.springframework.ui.Model) mapped.
 	at org.springframework.web.servlet.handler.AbstractHandlerMethodMapping.registerHandlerMethod(AbstractHandlerMethodMapping.java:192)
 	at org.springframework.web.servlet.handler.AbstractHandlerMethodMapping.detectHandlerMethods(AbstractHandlerMethodMapping.java:164)
 	at org.springframework.web.servlet.handler.AbstractHandlerMethodMapping.initHandlerMethods(AbstractHandlerMethodMapping.java:124)
@@ -681,9 +591,9 @@ public java.lang.String de.unibielefeld.techfak.tdpe.jsp.BlogController.index(or
                         entdeckt man als Grund:
                     </p>
                     <pre><code>Caused by: java.lang.IllegalStateException: Ambiguous mapping found. Cannot map 'welcomeController' bean method 
-public java.lang.String de.unibielefeld.techfak.tdpe.jsp.WelcomeController.welcome(java.util.Map&lt;java.lang.String, java.lang.Object&gt;)
+public java.lang.String de.unibielefeld.techfak.tdpe.thymeleaf.WelcomeController.welcome(java.util.Map&lt;java.lang.String, java.lang.Object&gt;)
 to {[/],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}: There is already 'blogController' bean method
-public java.lang.String de.unibielefeld.techfak.tdpe.jsp.BlogController.index(org.springframework.ui.Model) mapped.
+public java.lang.String de.unibielefeld.techfak.tdpe.thymeleaf.BlogController.index(org.springframework.ui.Model) mapped.
 </code></pre>
 
 
@@ -732,7 +642,7 @@ public java.lang.String de.unibielefeld.techfak.tdpe.jsp.BlogController.index(or
 
                     <p>
                         Um einen Service zum Liefern der BlogPosts zu erstellen, wird als erstes 
-                        im Package de.unibielefeld.techfak.tdpe.jsp.domain das Interface BlogService erstellt:
+                        im Package <code>de.unibielefeld.techfak.tdpe.thymeleaf.domain</code> das Interface <code>BlogService</code> erstellt:
                     </p>
 
                     <pre><code class="java">import java.util.List;
@@ -751,7 +661,7 @@ public interface BlogService {
 
                     <p>
                         Für dieses Interface brauchen wir zusätzlich auch eine Implementation.
-                        Dazu wird wieder im Package de.unibielefeld.techfak.tdpe.jsp.domain die Klasse BlogServiceStub erstellt:
+                        Dazu wird wieder im Package <code>de.unibielefeld.techfak.tdpe.thymeleaf.domain</code> die Klasse <code>BlogServiceStub</code> erstellt:
                     </p>
                     <pre><code class="java">import java.util.LinkedList;
 import java.util.List;
@@ -773,11 +683,11 @@ public class BlogServiceStub implements BlogService {
 </code></pre>
 
                     <p>
-                        Diese Klasse ist mit @Service annotiert. 
+                        Diese Klasse ist mit <span class="code-java">@Service</span> annotiert. 
                         Dies bedeutet, dass Spring beim Programmstart eine Instanz der Klasse erstellen und global verfügbar machen soll. 
-                        Andere Klassen können dann mit Hilfe der @Autowired-Annotation darum bitten, 
-                        eine Instanz von BlogService in einem privaten Feld oder als Konstruktorparameter zu bekommen, 
-                        und werden von Spring mit BlogServiceStub bekannt gemacht.
+                        Andere Klassen können dann mit Hilfe der <span class="code-java">@Autowired</span>-Annotation darum bitten, 
+                        eine Instanz von <code>BlogService</code> in einem privaten Feld oder als Konstruktorparameter zu bekommen, 
+                        und werden von Spring mit <code>BlogServiceStub</code> bekannt gemacht.
                     </p>
 
                     <p>
@@ -788,7 +698,7 @@ public class BlogServiceStub implements BlogService {
                     </p>
 
                     <p>
-                        In der Methode getAllPosts() erstellen wir wieder direkt 2 BlogPosts, wie auch schon im BlogController, 
+                        In der Methode getAllPosts() erstellen wir wieder direkt 2 BlogPosts, wie auch schon im <code>BlogController</code>, 
                         damit wir uns erstmal nicht datum kümmern müssen, wo die BlogPosts letztendlich herkommen.
                     </p>
 
@@ -798,11 +708,11 @@ public class BlogServiceStub implements BlogService {
                     <p class="h3">Controller anpassen</p>
 
                     <p>
-                        Von der @Service-Annotation des BlogServiceStubs machen wir nun im BlogController Gebrauch:
+                        Von der <span class="code-java">@Service</span>-Annotation des <code>BlogServiceStubs</code> machen wir nun im <code>BlogController</code> Gebrauch:
                     </p>
 
-                    <pre><code class="java">import de.unibielefeld.techfak.tdpe.jsp.domain.BlogPost;
-import de.unibielefeld.techfak.tdpe.jsp.domain.BlogService;
+                    <pre><code class="java">import de.unibielefeld.techfak.tdpe.thymeleaf.domain.BlogPost;
+import de.unibielefeld.techfak.tdpe.thymeleaf.domain.BlogService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -831,11 +741,11 @@ public class BlogController {
 
                     <p>
                         <code>BlogService blogService</code> ist der BlogService, welcher die BlogPosts liefern soll.
-                        Dieses wird über den Konstruktor gesetzt, welcher mit @Autowired annotiert ist.
+                        Dieses wird über den Konstruktor gesetzt, welcher mit <span class="code-java">@Autowired</span> annotiert ist.
                         Durch diese Annotation erkennt Spring, das es ein passendes Objekt bereitstellen soll. 
-                        Dieses Objekt ist jeweils eine Instanz einer mit @Service annotierten Klasse, wenn eine Instanz
-                        des Interfaces BlogService gebraucht wird, ist dies also die Klasse BlogServiceStub, 
-                        welche dieses Interface implementiert und mit @Service annotiert ist.
+                        Dieses Objekt ist jeweils eine Instanz einer mit <span class="code-java">@Service</span> annotierten Klasse, wenn eine Instanz
+                        des Interfaces <code>BlogService</code> gebraucht wird, ist dies also die Klasse <code>BlogServiceStub</code>, 
+                        welche dieses Interface implementiert und mit <span class="code-java">@Service</span> annotiert ist.
                     </p>
 
                     <p>
@@ -885,7 +795,7 @@ public class BlogController {
                         gelöscht. Um dieses kleinere Problem kümmern wir uns aber erst später.
                     </p>
 
-                    <p>Füge in deine pom.xml folgende Zeilen direkt oberhalb von &lt;/dependencies&gt; ein:</p>
+                    <p>Füge in deine <code>pom.xml</code> folgende Zeilen direkt oberhalb von <code>&lt;/dependencies&gt;</code> ein:</p>
                     <pre><code class="xml">&lt;dependency&gt;
     &lt;groupId>org.springframework.boot&lt;/groupId&gt;
     &lt;artifactId>spring-boot-starter-data-jpa&lt;/artifactId&gt;
@@ -894,6 +804,11 @@ public class BlogController {
     &lt;groupId>com.h2database&lt;/groupId&gt;
     &lt;artifactId>h2&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
+
+                    <p>Nach dem Eintragen in die pom.xml muss diese je nach den Einstellungen der eigenen IDE einmal neu eingelesen werden.
+                        Dies lässt sich meistens mit einem Rechtsklick auf die <code>pom.xml</code> und einem entsprechenden 
+                        Kontextmenüpunkt machen.
+                    </p>
 
                     <p>
                         spring-boot-starter-data-jpa wird nun, wenn es der Ansicht ist dass wir eine Datenbank brauchen, im Classpath
@@ -940,7 +855,7 @@ public class BlogController {
                     </p>
 
                     <p>
-                        Im Package de.unibielefeld.techfak.tdpe.jsp.persistence wird dazu die neue Klasse BlogPostEntity
+                        Im Package <code>de.unibielefeld.techfak.tdpe.thymeleaf.persistence</code> (auch das Package muss erstellt werden!) wird dazu die neue Klasse <code>BlogPostEntity</code>
                         erstellt: <!-- Auch hier: Package muss erst erstellt werden! -->
                     </p>
                     <pre><code class="java">import javax.persistence.*;
@@ -972,20 +887,20 @@ public class BlogPostEntity {
 </code></pre>
                     <p>
                         Hiermit wird definiert, dass es eine Tabelle mit dem Namen "blog_posts" geben soll, die die Felder "id",
-                        "title" und "text" hat und deren Zeilen sich als Objekte der Klasse BlogPostEntity darstellen lassen.
+                        "title" und "text" hat und deren Zeilen sich als Objekte der Klasse <code>BlogPostEntity</code> darstellen lassen.
                         <br/>
-                        Die Annotation @Id zeigt an, dass jede Tabellenzeile durch die Spalte 'id' eindeutig identifizert weden
+                        Die Annotation <span class="code-java">@Id</span> zeigt an, dass jede Tabellenzeile durch die Spalte 'id' eindeutig identifizert weden
                         kann.
-                        Mit @GeneratedValue bitten wir darum, Ids automatisch zuzuweisen damit wir uns nicht darum kümmern müssen.
+                        Mit <span class="code-java">@GeneratedValue</span> bitten wir darum, Ids automatisch zuzuweisen damit wir uns nicht darum kümmern müssen.
                         Die
                         Datenbank wird hierzu fortlaufende Nummern vergeben.
                         <br/>
-                        Die @Column-Annotationen dienen hier vor allem dazu, sicherzustellen dass alle Spalten genau den
+                        Die <span class="code-java">@Column</span>-Annotationen dienen hier vor allem dazu, sicherzustellen dass alle Spalten genau den
                         gewünschten Namen haben. Ohne Angabe eines extra namen wird anhand des Feld-Namens ein Spaltenname generiert.
                         <br/>
-                        Mit @Lob wird gefordert, dass der Text eines Blogeintrags ein "Large Object" ist.
+                        Mit <span class="code-java">@Lob</span> wird gefordert, dass der Text eines Blogeintrags ein "Large Object" ist.
                         Normalerweise würden Strings durch VARCHAR-Felder dargestellt, die in der Regel nur kurze Strings zulassen (z.B. bis zu 255 Zeichen).
-                        Eine @Lob-Spalte würde statt dessen als TEXT, LONGTEXT oder etwas ähnlichem dargestellt, was auch lange Texte zulässt.
+                        Eine <span class="code-java">@Lob</span>-Spalte würde statt dessen als TEXT, LONGTEXT oder etwas ähnlichem dargestellt, was auch lange Texte zulässt.
                     </p>
 
                     <hr>
@@ -997,7 +912,7 @@ public class BlogPostEntity {
                         Um Blogeinträge aus der Datenbank zu laden oder zu speichern wird außerdem ein Repository benötigt.
                         Dabei handelt es sich einfach nur um ein Interface das von CrudRepository erbt und beschreibt, was für Objekte mit
                         was für Ids in der Datenbank liegen, und nach welchen Kriterien man diese anfragen kann.<br/>
-                        Dazu wird im Package de.unibielefeld.techfak.tdpe.jsp.persistence ein neues Interface BlogPostRepository mit
+                        Dazu wird im Package <code>de.unibielefeld.techfak.tdpe.thymeleaf.persistence</code> ein neues Interface <code>BlogPostRepository</code> mit
                         folgendem Inhalt erstellt:
                     </p>
                     <pre>
@@ -1012,7 +927,7 @@ public interface BlogPostRepository extends CrudRepository&lt;BlogPostEntity, In
                         <br>
                         Die Generic-Argumente von CrudRepository erklären Spring, dass
                         wir damit auf BlogPostEntities zugreifen möchten, und dass wir als Ids dabei Integer verwenden. <br/>
-                        Eine Implementation von BlogPostRepository brauchen wir nicht zu erstellen - die wird zur Laufzeit von
+                        Eine Implementation von <code>BlogPostRepository</code> brauchen wir nicht zu erstellen - die wird zur Laufzeit von
                         Spring generiert.
                     </p>
 
@@ -1022,7 +937,7 @@ public interface BlogPostRepository extends CrudRepository&lt;BlogPostEntity, In
 
                     <p>Damit beim Testen auch Daten vorhanden sind, wäre es schön wenn die Anwendung beim Start die Datenbank erstmal mit
                         ein paar Beispiel-Blogeinträgen befüllt wird.<br/>
-                        Dazu wird eine Datei "import.sql" im Verzeichnis src/main/resources 
+                        Dazu wird eine Datei <code>import.sql</code> im Verzeichnis <code>src/main/resources</code> 
                         (In Netbeans unter "Other Sources" zu finden -- wo bereits die application.properties drin liegt), erstellt:
                     </p>
                     <pre>
@@ -1067,12 +982,12 @@ INFO 12182 --- [lication.main()] org.hibernate.tool.hbm2ddl.SchemaExport  : HHH0
                     <p>
                         Um Daten über das Repository aus der Datenbank zu laden, wird wieder ein Service benötigt.
                         <br>
-                        Dazu wird im Package de.unibielefeld.techfak.tdpe.jsp.domain die Klasse BlogServiceImpl, 
-                        die das Interface BlogService implementiert, erstellt:
+                        Dazu wird im Package <code>de.unibielefeld.techfak.tdpe.thymeleaf.domain</code> die Klasse <code>BlogServiceImpl</code>, 
+                        die das Interface <code>BlogService</code> implementiert, erstellt:
                     </p>
 
-                    <pre><code class="java">import de.unibielefeld.techfak.tdpe.jsp.persistence.BlogPostEntity;
-import de.unibielefeld.techfak.tdpe.jsp.persistence.BlogPostRepository;
+                    <pre><code class="java">import de.unibielefeld.techfak.tdpe.thymeleaf.persistence.BlogPostEntity;
+import de.unibielefeld.techfak.tdpe.thymeleaf.persistence.BlogPostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -1103,10 +1018,10 @@ public class BlogServiceImpl implements BlogService {
 }</code></pre>
 
                     <p>
-                        BlogServiceImpl ist wieder mit @Service annotiert, damit man diese Klasse wieder von Spring 
-                        erkannt wird und mit @Autowired verfügbar ist.
+                        BlogServiceImpl ist wieder mit <span class="code-java">@Service</span> annotiert, damit man diese Klasse wieder von Spring 
+                        erkannt wird und mit <span class="code-java">@Autowired</span> verfügbar ist.
                         <br>
-                        Außerdem ist der Konstruktor mit @Autowired annotiert, damit Spring angwiesen wird, 
+                        Außerdem ist der Konstruktor mit <span class="code-java">@Autowired</span> annotiert, damit Spring angwiesen wird, 
                         eine Instanz von BlogPostRepository bereitzustellen.
                         <br>
                         In <code>getAllPosts()</code> werden dann alle BlogPostEntitys über das Repository aus der Datenbank geladen, 
@@ -1131,7 +1046,7 @@ public class BlogServiceImpl implements BlogService {
 	at java.lang.reflect.Method.invoke(Method.java:483)
 	at org.springframework.boot.maven.RunMojo$LaunchRunner.run(RunMojo.java:300)
 	at java.lang.Thread.run(Thread.java:745)
-Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'blogController' defined in file [/.../blog/target/classes/de/unibielefeld/techfak/tdpe/jsp/BlogController.class]: Unsatisfied dependency expressed through constructor argument with index 0 of type [de.unibielefeld.techfak.tdpe.jsp.domain.BlogService]: : No qualifying bean of type [de.unibielefeld.techfak.tdpe.jsp.domain.BlogService] is defined: expected single matching bean but found 2: blogServiceImpl,blogServiceStub; nested exception is org.springframework.beans.factory.NoUniqueBeanDefinitionException: No qualifying bean of type [de.unibielefeld.techfak.tdpe.jsp.domain.BlogService] is defined: expected single matching bean but found 2: blogServiceImpl,blogServiceStub
+Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'blogController' defined in file [/.../blog/target/classes/de/unibielefeld/techfak/tdpe/jsp/BlogController.class]: Unsatisfied dependency expressed through constructor argument with index 0 of type [de.unibielefeld.techfak.tdpe.thymeleaf.domain.BlogService]: : No qualifying bean of type [de.unibielefeld.techfak.tdpe.thymeleaf.domain.BlogService] is defined: expected single matching bean but found 2: blogServiceImpl,blogServiceStub; nested exception is org.springframework.beans.factory.NoUniqueBeanDefinitionException: No qualifying bean of type [de.unibielefeld.techfak.tdpe.thymeleaf.domain.BlogService] is defined: expected single matching bean but found 2: blogServiceImpl,blogServiceStub
 	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:747)
 	at org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:185)
 	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1114)
@@ -1150,9 +1065,9 @@ Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Err
 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:311)
 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:909)
 	at org.springframework.boot.SpringApplication.run(SpringApplication.java:898)
-	at de.unibielefeld.techfak.tdpe.jsp.SampleWebJspApplication.main(SampleWebJspApplication.java:37)
+	at de.unibielefeld.techfak.tdpe.thymeleaf.SampleWebJspApplication.main(SampleWebJspApplication.java:37)
 	... 6 more
-Caused by: org.springframework.beans.factory.NoUniqueBeanDefinitionException: No qualifying bean of type [de.unibielefeld.techfak.tdpe.jsp.domain.BlogService] is defined: expected single matching bean but found 2: blogServiceImpl,blogServiceStub
+Caused by: org.springframework.beans.factory.NoUniqueBeanDefinitionException: No qualifying bean of type [de.unibielefeld.techfak.tdpe.thymeleaf.domain.BlogService] is defined: expected single matching bean but found 2: blogServiceImpl,blogServiceStub
 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:970)
 	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:858)
 	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:811)
@@ -1164,7 +1079,7 @@ Caused by: org.springframework.beans.factory.NoUniqueBeanDefinitionException: No
                         Der Grund für den Fehler lässt sich wieder am unteren Ende des StackTraces finden:
                     </p>
 
-                    <pre><code class="bash">Caused by: org.springframework.beans.factory.NoUniqueBeanDefinitionException: No qualifying bean of type [de.unibielefeld.techfak.tdpe.jsp.domain.BlogService] is defined: expected single matching bean but found 2: blogServiceImpl,blogServiceStub
+                    <pre><code class="bash">Caused by: org.springframework.beans.factory.NoUniqueBeanDefinitionException: No qualifying bean of type [de.unibielefeld.techfak.tdpe.thymeleaf.domain.BlogService] is defined: expected single matching bean but found 2: blogServiceImpl,blogServiceStub
 </code></pre>
 
                     <p>
@@ -1195,7 +1110,6 @@ Caused by: org.springframework.beans.factory.NoUniqueBeanDefinitionException: No
                             Eine der beiden Services mit <span class="code-java">@Primary</span> annotieren, diese wird 
                             dann bei <span class="code-java">@Autowired</span> bevorzugt
                          </li>
-                    
                     
                     </ul>
 
@@ -1234,15 +1148,15 @@ Caused by: org.springframework.beans.factory.NoUniqueBeanDefinitionException: No
 
                     <p>
                         Bisher können nur schon bei Programmstart in der Datenbank hinterlegte BlogPosts angezeigt werden, 
-                        es sollen jedoch auch neue einträge hinzugefügt werden können.
+                        es sollen jedoch auch neue Einträge hinzugefügt werden können.
                     </p>
 
                     <p class="h3">Service anpassen</p>
 
                     <p>
-                        Als Erstes wird dazu BlogService um die Methode 
+                        Als Erstes wird dazu <code>BlogService</code> um die Methode 
                         <code>BlogPost createBlogPost(BlogPost blogPost)</code> 
-                        erweitert und diese in BlogServiceImpl implementiert:
+                        erweitert und diese in <code>BlogServiceImpl</code> implementiert:
                     </p>
 
                     <!-- Klassennamen im Text deutlicher hervorheben! -->
@@ -1263,6 +1177,45 @@ public BlogPost createBlogPost(BlogPost blogPost) {
                         Aus der zurückgegebenen <code>BlogPostEntity savedEntity</code> wird dann wieder ein BlogPost erstellt, welcher zurückgegeben wird.
                     </p>
 
+                    <hr>
+
+                    <p class="h3">Command Objekt erstellen</p>
+
+                    <p>
+                        Für die Formulareingabe später in der View, wird noch ein sogenanntes Command-Objekt benötigt, dass quasi eine Java Entsprechung
+                        zu dem HTML Formular darstellt. D.h. für alle Elemente des Formulars (Eingabefelder, Checkboxen etc.) wird ein entsprechendes 
+                        Feld in der Java Klasse benötigt. Dieses Objekt sollte sich unter anderem aus Sicherheitsgründen vom Domänen- und Persistenzmodell
+                        der Anwendung unterscheiden. Die schon vorhandene Klasse <code>BlogPost</code> fällt somit heraus.
+                    </p>
+                    <p> Stattdessen wird innerhalb des Packages de.unibielefeld.techfak.tdpe.thymeleaf eine neue Klasse <code>NewBlogPostCmd</code> hinzugefügt:
+                    <pre><code class="Java">public class NewBlogPostCmd {
+
+    private String title;
+    private String text;
+
+    public NewBlogPostCmd() {
+
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+}
+                    </pre></code>
+
+
 
                     <hr>
 
@@ -1272,41 +1225,40 @@ public BlogPost createBlogPost(BlogPost blogPost) {
                     <p>
                         Der Controller braucht nun zwei neue Methoden - eine um das Formular zum Bearbeiten eines Blogeintrags anzuzeigen, und eine um den neuen Eintrag tatsächlich zu speichern.
                         <br>
-                        Dazu wird der BlogController um folgende Methoden erweitert:
+                        Dazu wird der <code>BlogController</code> um folgende Methoden erweitert:
                     </p>
 
                     <pre><code class="java">    @RequestMapping(value = "/new", method = RequestMethod.GET)
-    public String showNewPostForm() {
+    public String showNewPostForm(NewBlogPostCmd newBlogPostCmd) {
         return "newPostForm";
     }
 
     @RequestMapping(value = "/new", method = RequestMethod.POST)
-    public String saveNewPost(@RequestParam String title,
-                              @RequestParam String text) {
-        BlogPost blogPost = new BlogPost(null, title, text);
-        blogService.createBlogPost(blogPost);
+    public String saveNewPost(NewBlogPostCmd newBlogPostCmd) {
+        blogService.createBlogPost(new BlogPost("", newBlogPostCmd.getTitle(), newBlogPostCmd.getText()));
         return "redirect:/";
     }
 </code></pre>
 
                     <p>
-                        Die erste Methode tut selber nichts, sondern zeigt einfach nur die View "newPostForm" an. 
+                        Die erste Methode tut selber nichts, sondern zeigt einfach die View <code>newPostForm</code> an und unterrichtet mittels des
+                        Parameters newBlogPostCmd die View darüber, eine entsprechende Variable vorzuhalten. 
                         <br>
-                        Die zweite Methode erhält zwei Parameter, jeweils als @RequestParam. Das heißt dass die 
-                        Belegung der Parameter aus den im HTTP-Request übertragenen Formulardaten zu beziehen ist.
+                        Die zweite Methode erhält denselben Parameter, der diesmal allerdings aus den im HTTP-Request übertragenen Formulardaten zu 
+                        beziehen ist. In ihm wird also später der Inhalt des HTML-Formulars abgespeichert.
                         <br>
                         Dem aufmerksamen Beobachter mag aufgefallen sein, dass beide Methoden auf Anfragen auf dem 
-                        Pfad "/new" reagieren. Das RequestMapping unterscheidet sich nur darin, was als method angegeben ist. 
+                        Pfad <span class="code-java">/new</span> reagieren. Das RequestMapping unterscheidet sich nur darin, was als method angegeben ist. 
                         HTTP erlaubt es, beim Zugriff auf eine Seite anzugeben was für eine Art von Zugriff erwünscht ist. 
                         Dies wird im allgemeinen als "method" bezeichnet. Standardmäßig verwendet der Webbrowser immer GET. 
-                        Ruft man also einfach nur die URL "/new" auf, wird die methode GET verwendet und showNewPostForm() wird aufgerufen. 
+                        Ruft man also einfach nur die URL <span class="code-java">/new</span> auf, wird die methode GET verwendet und showNewPostForm() wird aufgerufen. 
                         In unserem Formular werden wir den Browser anweisen, zum Abspeichern des Blogeintrags statt dessen 
                         POST zu verwenden - dann würde saveNewPost() aufgerufen. 
                         Der HTTP-Standard sieht noch einige weitere Methoden vor, wie z.B. DELETE und PUT, aber die sind für 
                         uns gerade nicht allzu spannend. Solltet Ihr in die Situation kommen, Schnittstellen für AJAX-lastige 
                         Webanwendungen schreiben zu müssen, solltet Ihr euch mit den verschiendenen HTTP-Methoden und ihrer 
                         Bedeutung aber auseinander setzen. 
-                        Der von saveNewPost() zurückgelieferte Viewname beginnt mit "redirect:", um anzudeuten dass wir selber 
+                        Der von saveNewPost() zurückgelieferte Viewname beginnt mit <code>"redirect:"</code>, um anzudeuten dass wir selber 
                         keine view rendern wollen, sondern der Browser nach Abschluß dieses Requests direkt eine andere URL 
                         aufrufen soll. Die aufzurufende URL ergibt sich aus dem Text hinter dem Doppelpunkt. In diesem Fall 
                         soll also die Startseite (entsprechend der index()-Methode des Controllers) aufgerufen werden.
@@ -1315,48 +1267,41 @@ public BlogPost createBlogPost(BlogPost blogPost) {
 
                     <hr>
 
-
                     <p class="h3">View anpassen</p>
 
 
                     <p>
                         Um das Formular anzuzeigen, wird noch eine View benötigt.
                         <br>
-                        Dazu wird src/main/java/webapp/WEB-INF/jsp/newPostForm.jsp erstellt:
+                        Dazu wird <code>src/main/resources/templates/newPostForm.html</code> erstellt:
                     </p>
 
 
                     <pre><code class="html">&lt;!DOCTYPE html&gt;
 
-&lt;%@ taglib prefix=&quot;spring&quot; uri=&quot;http://www.springframework.org/tags&quot;%&gt;
-&lt;%@ taglib prefix=&quot;c&quot; uri=&quot;http://java.sun.com/jsp/jstl/core&quot;%&gt;
-&lt;%@ taglib prefix=&quot;form&quot; uri=&quot;http://www.springframework.org/tags/form&quot; %&gt;
+&lt;html xmlns:th="http://www.thymeleaf.org"&gt;
 
-&lt;html lang=&quot;en&quot;&gt;
-    &lt;head&gt;
-        &lt;meta charset=&quot;utf-8&quot;&gt;
-    &lt;/head&gt;
+&lt;body&gt;
+&lt;form action="#" th:action="@{/new}" th:object="${newBlogPostCmd}" method="post"&gt;
+    &lt;label for="title"&gt;Titel:&lt;/label&gt;
+    &lt;input type="text" id="title" name="title" th:field="*{title}"/&gt;
+    &lt;label for="text"&gt;Text:&lt;/label&gt;
+    &lt;textarea id="text" name="text" th:field="*{text}"&gt;&lt;/textarea&gt;
+    &lt;input type="submit" value="Speichern"/&gt;
+&lt;/form&gt;
 
-    &lt;body&gt;
-        &lt;form:form method=&quot;POST&quot; &gt;
-            &lt;label for=&quot;title&quot;&gt;Titel:&lt;/label&gt;
-            &lt;input id=&quot;title&quot; name=&quot;title&quot; placeholder=&quot;Titel&quot; /&gt;
-            &lt;label for=&quot;text&quot;&gt;Text:&lt;/label&gt;
-            &lt;textarea id=&quot;text&quot; name=&quot;text&quot; placeholder=&quot;Text&quot;&gt;&lt;/textarea&gt;
-            &lt;button &gt;Speichern&lt;/button&gt;
-        &lt;/form:form&gt;
-    &lt;/body&gt;
+&lt;/body&gt;
 
 &lt;/html&gt;
 </code></pre>
 
                     <p>
                         Außerdem wird in der index.jsp noch ein Link auf die neue Seite benötigt, 
-                        dazu wird die index.jsp unter &lt;h1&gt;BlogPosts&lt;/h1&gt; ergänzt um:
+                        dazu wird die index.html unter &lt;h1&gt;BlogPosts&lt;/h1&gt; ergänzt um: 
                     </p>
 
 
-                    <pre><code class="html">&lt;a href=&quot;&lt;spring:url value=&quot;/new&quot; /&gt;&quot;&gt;Neuer Eintrag&lt;/a&gt;
+                    <pre><code class="html">&lt;a th:href=&quot;@{/new}&quot;&gt;Neuer Eintrag&lt;/a&gt;
 </code></pre>
 
 
@@ -1388,7 +1333,7 @@ public BlogPost createBlogPost(BlogPost blogPost) {
                         und so weiter umzusetzen: Spring Security. 
                         <br>
                         Wie bereits bei der Datenbankanbindung muss man nur in der pom.xml die passende Abhängigkeit angeben -
-                        in diesem Fall spring-boot-starter-security.
+                        in diesem Fall <code>spring-boot-starter-security</code>.
                     </p>
 
                     <pre><code class="xml">&lt;dependency&gt;
@@ -1406,7 +1351,7 @@ public BlogPost createBlogPost(BlogPost blogPost) {
                     <p>
                         Damit Spring die Benutzerverwaltung passend konfiguriert, braucht man eine Klasse, die die Konfiguration bereitstellt.
                         <br>
-                        Dazu wird im Package <code>de.unibielefeld.techfak.tdpe.jsp.config</code> die Klasse <code>SecurityConfig</code> erstellt:
+                        Dazu wird im neuen Package <code>de.unibielefeld.techfak.tdpe.thymeleaf.config</code> die Klasse <code>SecurityConfig</code> erstellt:
                         <!-- Package muss erstellt werden! -->
                     </p>
 
@@ -1417,33 +1362,33 @@ public BlogPost createBlogPost(BlogPost blogPost) {
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.annotation.web.servlet.configuration.EnableWebMvcSecurity;
 
 @Configuration
-@EnableWebMvcSecurity
+@EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-            .authorizeRequests()
-            .antMatchers(&quot;/&quot;).permitAll()
-            .anyRequest().hasAuthority("USER")
-            .and()
-            .formLogin()
-            .permitAll()
-            .and()
-            .logout()
-            .permitAll()
+                .authorizeRequests()
+                .antMatchers("/").permitAll()
+                .anyRequest().hasAuthority("USER")
+                .and()
+                .formLogin()
+                .permitAll()
+                .and()
+                .logout()
+                .permitAll()
         ;
     }
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth
-            .inMemoryAuthentication()
-            .withUser(&quot;user&quot;).password(&quot;password&quot;).roles(&quot;USER&quot;);
-        
+                .inMemoryAuthentication()
+                .withUser("user").password("password").authorities("USER");
+
     }
 }
 </code></pre>
@@ -1453,7 +1398,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     </p>
                     <ul>
                         <li>
-                            Anfragen auf "/" sollen immer erlaubt sein
+                            Anfragen auf <span class="code-java">"/"</span> sollen immer erlaubt sein
                         </li>
                         <li>
                             Alle anderen Anfragen nur für Nutzer mit der Rolle "USER"
@@ -1462,16 +1407,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                             Ein fertiges Login-Formular von Spring verwendet werden soll und jeder Benutzer Zugriff auf das Formular bekommen soll
                         </li>
                         <li>
-                            <!-- Was bedeutet "POST"? --> Es möglich sein soll, durch einen POST-Request auf /logout sich auszuloggen, und auch das für jeden Benutzer möglich sein soll
+                            <!-- Was bedeutet "POST"? --> Es möglich sein soll, durch einen POST-Request auf <span class="code-java">"/logout"</span> sich auszuloggen, und auch das für jeden Benutzer möglich sein soll
                         </li>
                     </ul>
                     <p>
                         In der configureGlobal()-Methode legen wir außerdem fest, dass wir eine feste, im Programm vorgegebene Benutzerliste 
-                        haben möchten, nämlich mit den Benutzernamen "user" und dem Passwort "password".
+                        haben möchten, nämlich mit den Benutzernamen <span class="code-java">"user"</span> und dem Passwort <span class="code-java">"password"</span>.
                         <br/>
                         Spring Security erlaubt es, Benutzern unterschiedliche Rollen zuzuweisen, 
                         um z.B. zwischen Benutzern und Administratoren zu unterscheiden. 
-                        Wir verwenden in dieser Anwendung nur eine Rolle und nennen sie "USER".
+                        Wir verwenden in dieser Anwendung nur eine Rolle und nennen sie <span class="code-java">"USER"</span>.
                     </p>
                     <hr/>
 
@@ -1491,13 +1436,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         <br/>
                         Wie oben erklärt ist für einen Logout jedoch nur ein POST-Request an "/logout" nötig.
                         <br/>
-                        Um dies zu ermöglichen, wird die <code>newPostForm.jsp</code> unterhalb des <code>&lt;/form:form&gt;</code>um folgendes erweitert:
+                        Um dies zu ermöglichen, wird die <code>newPostForm.html</code> unterhalb des <code>&lt;/form:form&gt;</code>um folgendes erweitert:
                     </p>
 
-                    <pre><code>&lt;spring:url value="/logout" var="logoutUrl"/&gt;
-&lt;form:form action="${logoutUrl}" method="POST"&gt;
-    &lt;button&gt;Logout&lt;/button&gt;
-&lt;/form:form&gt;
+                    <pre><code>&lt;form th:action="@{/logout}" method="post"&gt;
+    &lt;input type="submit" value="Logout"/&gt;
+&lt;/form&gt;
 </code></pre>
 
 
@@ -1528,7 +1472,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         Interface implementieren - UserDetails. Der einfachste Weg dazu ist, von einer von 
                         Spring Security bereitgestellten Klasse <code>User</code> zu erben. 
                         <br/>
-                        Dazu wird im package <code>de.unibielefeld.techfak.tdpe.jsp.domain</code> die neue Klasse <code>User</code> erstellt:
+                        Dazu wird im package <code>de.unibielefeld.techfak.tdpe.thymeleaf.domain</code> die neue Klasse <code>User</code> erstellt:
                     </p>
 
                     <pre>
@@ -1575,7 +1519,7 @@ public class User extends org.springframework.security.core.userdetails.User {
                         Rolle <code>role</code>. Diese zu übergeben ist nicht nötig - man könnte sie auch im Konstruktor 
                         neu erstellen, da der Blog nur eine Art Nutzer kennt - es ermöglicht aber später leichtere 
                         Anpassungen, wenn es verschiedene Rollen geben soll.
-                        Eine zusätliche Alternative, wenn ein Nutzer mehrere Rollen haben kann, wäre den Konstruktor ändern, 
+                        Eine zusätzliche Alternative, wenn ein Nutzer mehrere Rollen haben kann, wäre den Konstruktor ändern, 
                         sodass er nicht eine einzelne Rolle, sondern eine Liste von Rollen entgegennimmt.
                     </p>
 
@@ -1588,7 +1532,7 @@ public class User extends org.springframework.security.core.userdetails.User {
                     <p>
                         Damit die Nutzer aus der Datenbank geladen werden können, wird wieder ein Persistenzmodell benötigt.
                         <br/>
-                        Dazu wird im package <code>de.unibielefeld.techfak.tdpe.jsp.persistence</code> die neue Klasse <code>UserEntity</code> erstellt:
+                        Dazu wird im package <code>de.unibielefeld.techfak.tdpe.thymeleaf.persistence</code> die neue Klasse <code>UserEntity</code> erstellt:
                     </p>
 
                     <pre>
@@ -1642,7 +1586,7 @@ public class UserEntity {
                     <p>
                         Um Nutzer aus der Datenbank zu laden, ist zusätzlich wieder ein Repository nötig.
                         <br/>
-                        Dazu wird im package <code>de.unibielefeld.techfak.tdpe.jsp.persistence</code> das Interface <code>UserRepository</code> erstellt:
+                        Dazu wird im package <code>de.unibielefeld.techfak.tdpe.thymeleaf.persistence</code> das Interface <code>UserRepository</code> erstellt:
                     </p>
 
                     <pre>
@@ -1665,15 +1609,15 @@ public interface UserRepository extends CrudRepository&lt;UserEntity, String&gt;
                     <p>
                         Damit Spring Security die Benutzer findet, muss ein UserDetailsService existieren.
                         <br/>
-                        Dazu wird im package <code>de.unibielefeld.techfak.tdpe.jsp.domain</code> die neue Klasse 
+                        Dazu wird im package <code>de.unibielefeld.techfak.tdpe.thymeleaf.domain</code> die neue Klasse 
                         <code>BlogUserDetailsService</code> erstellt, welche das Interface 
                         <code>UserDetailsService</code> implementiert: <!-- Klarstellen: UDS ist ein Spring-Interface! -->
                     </p>
 
 
                     <pre>
-<code class="java">import de.unibielefeld.techfak.tdpe.jsp.persistence.UserEntity;
-import de.unibielefeld.techfak.tdpe.jsp.persistence.UserRepository;
+<code class="java">import de.unibielefeld.techfak.tdpe.thymeleaf.persistence.UserEntity;
+import de.unibielefeld.techfak.tdpe.thymeleaf.persistence.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -1734,21 +1678,23 @@ public class BlogUserDetailsService implements UserDetailsService {
         return new BCryptPasswordEncoder();
     }
 </code></pre>
-
+                    <p> Durch einen Bug in IntelliJ kann es vorkommen, dass an dieser Stelle behauptet wird, der <code>UserDetailsService</code> könnte
+                        nicht <span class="code-java">@Autowired</span> werden. Lasst euch davon nicht irritieren! 
+                    </p>
                     <p>
-                        Durch die @Autowired Annotation an configureGlobal weiß Spring, dass die Parameter mit woanders
+                        Durch die <span class="code-java">@Autowired</span> Annotation an configureGlobal weiß Spring, dass die Parameter mit woanders
                         erzeugten
                         Beans belegt werden müssen.
                         <br/>
                         In <code>configureGlobal()</code> wird dann einfach nur der AuthenticationManagerBuilder darüber informiert, dass es
                         einen
-                        UserDetailsService (der eben imlementiert und mit der @Service Annotation bereitgestellt wurde)
+                        <code>UserDetailsService</code> (der eben imlementiert und mit der <span class="code-java">@Service</span> Annotation bereitgestellt wurde)
                         und einen PasswordEncoder verwenden soll. Letzterer kümmert sich darum, die vor einiger Zeit erwähnte
                         Hashfunktion und die dadurch etwas veränderten Passwortvergleiche umzusetzen.</p>
 
                     <p>Die Methode passwordEncoder() erstellt dann einen neuen PasswordEncoder, der BCrypt als Hashfunktion
                         verwendet. Das ist ein recht aktuelles und momentan als sicher geltendes Hashverfahren. <br/>
-                        Durch die @Bean-Annotation wird der Rückgabewert der Methode für Autowiring an anderen Stellen verfügbar
+                        Durch die <span class="code-java">@Bean</span>-Annotation wird der Rückgabewert der Methode für Autowiring an anderen Stellen verfügbar
                         gemacht, z.B. damit Spring es als Parameter für <code>configureGlobal()</code> benutzen kann.</p>
 
 
@@ -1986,15 +1932,13 @@ public BlogPost createBlogPost(BlogPost blogPost) {
                         Dazu wird die Methode <code>saveNewPost()</code> angepasst:
                     </p>
                     <pre><code class="java">    @RequestMapping(value = "/new", method = RequestMethod.POST)
-    public String saveNewPost(@RequestParam String title,
-                              @RequestParam String text,
-                              @AuthenticationPrincipal User currentUser) {
-        BlogPost blogPost = new BlogPost(null, currentUser, title, text);
+    public String saveNewPost(NewBlogPostCmd newBlogPostCmd, @AuthenticationPrincipal User currentUser) {
+        BlogPost blogPost = new BlogPost(null, currentUser, newBlogPostCmd.getTitle(), newBlogPostCmd.getText());
         blogService.createBlogPost(blogPost);
         return "redirect:/";
     }</code></pre>
 
-                    <p>Dadurch, dass der Parameter currentUser als @AuthenticationPrincipal annotiert ist, weiß Spring, dass
+                    <p>Dadurch, dass der Parameter currentUser als <span class="code-java">@AuthenticationPrincipal</span> annotiert ist, weiß Spring, dass
                         nicht irgendeinen Requestparameter gesucht ist, oder einen User in dieser Methode bearbeiten werden soll, 
                         sondern wirklich der momentan eingeloggten User gebraucht wird.
                         <br/>
@@ -2007,11 +1951,11 @@ public BlogPost createBlogPost(BlogPost blogPost) {
                     </p>
 
                     <p>
-                        Damit die Autoren auch in der View zu sehen sind, muss <code>index.jsp</code> angepasst werden. 
+                        Damit die Autoren auch in der View zu sehen sind, muss <code>index.html</code> angepasst werden. 
                         Dazu wird die Überschrift der BlogPosts folgendermaßen geändert:
                     </p>
 
-                    <pre><code class="html">&lt;h2&gt;&lt;c:out value=&quot;${post.title}&quot;/&gt; (von &lt;c:out value=&quot;${post.author.fullName}&quot;/&gt;)&lt;/h2&gt;</code> </pre>
+                    <pre><code class="html">&lt;h2 th:text="${post.title} + ' (von ' + ${post.author.fullName} + ')'"/&gt;</code> </pre>
 
 
 
@@ -2033,11 +1977,12 @@ public BlogPost createBlogPost(BlogPost blogPost) {
                 <hr>
             </div>
 
-            <!--Schritt 14 - Datenbank zwsichen Programmstarts beibehalten-->
+            <!--Schritt 14 - Datenbank zwischen Programmstarts beibehalten-->
             <div>
                 <div class="well">
-                    <h2>Schritt 14 - Datenbank zwsichen Programmstarts beibehalten</h2>
+                    <h2>Schritt 14 - Datenbank zwischen Programmstarts beibehalten</h2>
 
+            <!--
             <div>
                 <div class="well" style="background-image: linear-gradient(to bottom, #FFa0a0 0%, #ffe8e8 100%);">
                     TODO!
@@ -2047,7 +1992,7 @@ public BlogPost createBlogPost(BlogPost blogPost) {
                     Ist das Setting auf "create" gesetzt, wird die datenbank beim Start geloescht. <br>
                 </div>
             </div>
-  
+            -->
 
                     <p>
                         Bisher wird H2 als reine in-memory-Datenbank verwendet. Das führt dazu, dass bei jedem Programmstart
@@ -2063,7 +2008,7 @@ public BlogPost createBlogPost(BlogPost blogPost) {
                     <h3>application.properties</h3>
 
                     <p>
-                        Die application.properties Datei muss um folgenede Zeilen ergänzt werden:
+                        Die <code>application.properties</code> Datei muss um folgenede Zeilen ergänzt werden:
                     </p>
 
                     <pre>
@@ -2084,30 +2029,126 @@ spring.datasource.driver-class-name=org.h2.Driver
                         Die dritte Zeile benennt die Klasse, mit der die vorher beschriebe Datenbank geöffnet werden kann.
                     </p>
 
+                    <h3> Interface BlogUserDetailsService anpassen </h3>
+                    <p>
+                        Im Folgenden werden wir die Datenbankinitialisierung etwas sauberer realisieren. Leider ist dafür einige Arbeit nötig. <br/>
+                        Als erstes ändert den Namen von <code>BlogUserDetailsService</code> auf </code>BlogUserDetailsServiceImpl</code> mittels
+                        Refactoring. <br/>
+                        Erstellt dann ein neues Interface mit dem Namen <code>BlogUserDetailsService</code> (unterhalb des domain Pakets), 
+                        der ja nun wieder frei ist.</p>
+                        <pre><code class="java">import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
+
+public interface BlogUserDetailsService extends UserDetailsService {
+
+    User loadUserByUsername(String s) throws UsernameNotFoundException;
+    void addUser(User user);
+}</pre></code>
+                    <p>Nun kann auch <code>BlogUserDetailsServiceImpl</code> unser neues Interface implementieren: </p>
+
+                    <pre><code class="java">@Service
+public class BlogUserDetailsServiceImpl implements BlogUserDetailsService {</pre></code>
+
+                    <p>Ausserdem kann nun die loadUserByUsername()-Methode nun einen User zurückliefern und eine addUser()-Methode,
+                        die wir gleich brauchen werden, kann hinzugefügt werden. </p>
+
+                    <pre><code class="java">    @Override
+    public User loadUserByUsername(String username) throws UsernameNotFoundException {
+        UserEntity userEntity = userRepository.findOne(username);
+        if (userEntity == null) {
+            throw new UsernameNotFoundException("User name " + username + " not found.");
+        }
+        return new User(userEntity.getUsername(),
+                userEntity.getFirstName(),
+                userEntity.getLastName(),
+                userEntity.getPasswordHash(),
+                userEntity.getUserRole());
+    }
+
+    @Override
+    public void addUser(User user) {
+        UserEntity userEntity = new UserEntity();
+        userEntity.setFirstName(user.getFirstName());
+        userEntity.setLastName(user.getLastName());
+        userEntity.setUsername(user.getUsername());
+        userEntity.setUserRole("USER");
+        userEntity.setPasswordHash(passwordEncoder.encode(user.getPassword()));
+        userRepository.save(userEntity);
+    }</pre></code>
+    <p>Aus der Methode getAllPosts() in der Klasse <code>BlogServiceImpl</code> kann nun auch der etwas problematische cast entfernt werden,
+        so dass sie nun wie folgt aussehen sollte: </p>
+        <pre><code class="java">    @Override
+    public List getAllPosts() {
+        List<BlogPost> result = new LinkedList<BlogPost>();
+        for (BlogPostEntity blogPostEntity : blogPostRepository.findAll()) {
+            result.add(new BlogPost(
+                    blogPostEntity.getId().toString(),
+                    userDetailsService.loadUserByUsername(blogPostEntity.getAuthor().getUsername()),
+                    blogPostEntity.getTitle(),
+                    blogPostEntity.getText()
+            ));
+        }
+        return result;
+    }</pre></code>
+                    <h3>Initializierung der Datenbank anpassen</h3>
+                    <p>Nach den Vorarbeiten können wir nun die Initialisierung der Datenbank aus der Datei <code>import.sql</code> entfernen
+                        und diese stattdessen in einer Initialisierungsklassen durchführen. Das Problem mit der Initialisierung mittels
+                        SQL Scripten ist nämlich, dass diese zu einem sehr frühen Zeitpunkt ausgeführt werden, an dem im Datenbanksystem 
+                        noch kein Transaktionsmanagement aktiv ist. Das Transaktionsmanagement verhindert unter anderem das Erzeugen von
+                        inkonsistenten Zuständen der Datenbank. Das könnte bei einem Script noch passieren, wenn zum Beispiel beim Ausführen
+                        des Scripts etwas schief geht. <br/>
+                        Wir erzeugen nun in dem <code>domain</code> Paket eine neue Klasse <code>InitializeDatabase</code> mit folgendem Inhalt:
+                    </p>
+                    <pre><code class="java">import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+@Service
+public class InitializeDatabase implements InitializingBean {
+
+    private final BlogUserDetailsService userDetailsService;
+    private final BlogService blogService;
+
+    @Autowired
+    public InitializeDatabase(BlogUserDetailsService userDetailsService, BlogService blogService) {
+        this.userDetailsService = userDetailsService;
+        this.blogService = blogService;
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        try {
+            userDetailsService.loadUserByUsername("bob");
+        } catch (UsernameNotFoundException enfe) {
+            userDetailsService.addUser(new User("bob", "Bob", "Page", "password", "User"));
+        }
+        try {
+            userDetailsService.loadUserByUsername("peter");
+        } catch (UsernameNotFoundException enfe) {
+            userDetailsService.addUser(new User("peter", "Peter", "Parker", "password", "User"));
+        }
+        if (blogService.getAllPosts().isEmpty()) {
+            blogService.createBlogPost(new BlogPost(null, userDetailsService.loadUserByUsername("bob"),
+                    "mein erster eintrag", "lorem ipsum dolor sit amet..."));
+            blogService.createBlogPost(new BlogPost(null, userDetailsService.loadUserByUsername("peter"),
+                    "mein zweiter eintrag", "Wants pawn term, dare worsted ladle gull hoe lift wetter" +
+                    " murder inner ladle cordage, honor itch offer lodge dock florist."));
+        }
+    }
+}
+</pre></code>
+                    <p>Wir nutzen hier aus, dass die Methode afterPropertiesSet() einer InitializingBean zu einem frühen Zeitpunkt
+                        der Anwendung ausgeführt wird. Geprüft wird hier nur, ob die beiden Standardbenutzer und BlogPosts vorhanden
+                        sind und erstellen diese ggf. neu.
+                    </p>
+
                     <h3>import.sql </h3>
 
-                    <p
-                        >Beim Programmstart wurden bisher grundsätzlich immer neue Zeilen für die beiden Beispielbenutzer und
-                        -Blogeinträge erstellt. Dies müssen nun als optional markiert werden.
-                        <br/>
-                        Der einfachste Weg dafür ist, die <code>import.sql</code> anzupassen und aus den INSERT-Statements jeweils
-                        MERGE-Statements
-                        zu machen. (Das ist ein H2DB-Spezifisches Feature und funktioniert bei anderen Datenbanken nicht!)
-                    </p>
-
-                    <pre><code class="sql">MERGE INTO users (username, password_hash, first_name, last_name, user_role) VALUES ('peter', '$2a$10$WoG5Z4YN9Z37EWyNCkltyeFr6PtrSXSLMeFWOeDUwcanht5CIJgPa', 'Peter', 'Parker', 'USER');
-MERGE INTO users (username, password_hash, first_name, last_name, user_role) VALUES ('bob', '$2a$10$WoG5Z4YN9Z37EWyNCkltyeFr6PtrSXSLMeFWOeDUwcanht5CIJgPa', 'Bob', 'Page', 'USER');
-                    
-MERGE INTO blog_posts (id, author_username, title, text) VALUES (1, 'bob', 'mein erster eintrag', 'lorem ipsum dolor sit amet...');
-MERGE INTO blog_posts (id, author_username, title, text) VALUES (2, 'peter', 'mein zweiter eintrag', 'Wants pawn term, dare worsted ladle gull hoe lift wetter murder inner ladle cordage, honor itch offer lodge dock florist. ');
-    </code></pre>
-
                     <p>
-                        Die Standard-nutzer und Blogeinträge werden nun zwar bei jedem Programmstart wieder auf die Vorbelegung aus
-                        der
-                        import.sql zurückgesetzt, aber immerhin startet die Anwendung nun wieder.
+                       Diese Datei wird nicht weiter benötigt und <b>muss gelöscht</b> werden! 
                     </p>
-
 
                     <hr>
 
@@ -2152,16 +2193,9 @@ MERGE INTO blog_posts (id, author_username, title, text) VALUES (2, 'peter', 'me
                     <h3>Controller</h3>
 
                     <p>
-                        Um Bean Validation nutzen zu können, müssen die vom Benutzer gelieferten Formulareingaben zu einem Objekt
-                        zusammengefasst werden.
+                        Um Form Validation zu nutzen, kann man Annotationen in unserer Klasse "NewBlogPostCmd" im Paket 
+                        <code>de.unibielefeld.techfak.tdpe.thymeleaf</code> einfügen:
                     </p>
-
-                    <p>
-                        Diese Art von Objekten wird im weiteren als 'Command-Objekt' bezeichnet und ist in der Regel noch einmal
-                        separat von den Domänen- und Persistenzmodellen der Anwendung.
-                    </p>
-
-                    <p>Innerhalb des Packages <code>de.unibielefeld.techfak.tdpe.jsp</code> wird eine neue Klasse "NewBlogPostCmd" hinzugefügt:</p>
                     <pre><code class="java">public  class NewBlogPostCmd {
     @NotBlank
     private String title;
@@ -2187,9 +2221,7 @@ MERGE INTO blog_posts (id, author_username, title, text) VALUES (2, 'peter', 'me
 }
 </code></pre>
                     <p>
-                        Dabei handelt es sich um ein gewöhnliches <a target="_blank" href="https://de.wikipedia.org/wiki/Plain_Old_Java_Object"><i>POJO</i></a> ohne eigene Logik, welches einfach nur jeweils ein Feld
-                        zusammen  mit Gettern und Settern für jedes Formularfeld hat. 
-                        Die entsprechenden privaten Felder sind dabei mit Annotationen versehen, die
+                        Unsere privaten Felder sind werden mit Annotationen versehen, die
                         angeben welche Eigenschaften der Eingabe erfüllt sein müssen, damit das jeweilige Feld als 
                         'korrekt ausgefüllt' gelten kann.
                     </p>
@@ -2209,12 +2241,7 @@ MERGE INTO blog_posts (id, author_username, title, text) VALUES (2, 'peter', 'me
                     <pre><code class="java">@Controller
 public class BlogController {
     // ...stuff ...
-    @RequestMapping(value = "/new", method = RequestMethod.GET)
-    public String showNewPostForm(Model model) {
-        model.addAttribute("newBlogPostCmd", new NewBlogPostCmd());
-        return "newPostForm";
-    }
-
+    
     @RequestMapping(value = "/new", method = RequestMethod.POST)
     public String saveNewPost(@Valid NewBlogPostCmd newBlogPostCmd,
                               BindingResult bindingResult,
@@ -2231,23 +2258,12 @@ public class BlogController {
     }
     //... stuff...
 }</code></pre>
+                    
                     <p>
-                        Das waren einige Änderungen... Schrittweise:
-                    </p>
-
-                    <p>
-                        Die Methode zur Anzeige des Formulars stellt nun der View ein leeres NewBlogPostCmd zur Verfügung. Dies ist
-                        aufgrund gleich noch anfallender Änderungen an der <code>index.jsp</code> notwendig.
-                    </p>
-
-                    <p>
-                        Die saveNewPost()-Methode erhält nun nicht mehr die beiden Felder als einzelne Parameter, sondern stattdessen
-                        übergibt Spring der Methode ein mit den Benutzereingaben befülltes NewBlogPostCmd. 
-                        Dieses ist mit <span class="code-java">@Valid</span> annotiert, um Spring darüber zu informieren,
-                        dass die in NewBlogPostCmd hinterlegten Validierungen vor Aufruf von saveNewPost() durchgeführt werden müssen.
-                        Der unmittelbar darauf folgende BindingResult Parameter enthält die Ergebnisse der Validierung - also, welche
-                        Felder Fehler enthalten, und
-                        was für Fehlermeldungen auszugeben sind.
+                        Der Parameter newBlogPostCmd ist nun mit <span class="code-java">@Valid</span> annotiert, um Spring darüber 
+                        zu informieren, dass die in NewBlogPostCmd hinterlegten Validierungen vor Aufruf von saveNewPost() durchgeführt 
+                        werden müssen. Der unmittelbar darauf folgende BindingResult Parameter enthält die Ergebnisse der Validierung 
+                        - also, welche Felder Fehler enthalten, und was für Fehlermeldungen auszugeben sind.
                     </p>
 
                     <p>
@@ -2266,30 +2282,40 @@ public class BlogController {
                     </h3>
 
                     <p>In der View für das zu validierende Formular müssen nun noch ggf. anfallende Fehlermeldungen angezeigt werden.
-                        Dazu werden wir unter anderem die bisher verwendeten <span class="code-html">&lt;input&gt;</span>-Elemente 
-                        durch Springs <span class="code-html">form:input</span> ersetzen.
-                        Dies erlaubt u.a., unterschiedliche CSS-Klassen an einem Formularfeld anzubringen, je nachdem ob es korrekt
-                        ausgefüllt wurde oder nicht.
-                        <br/>
-                        Die eigentliche Ausgabe der Fehlermeldungen erfolgt dann mit <span class="code-html">&lt;form:errors&gt;</span>.
-                    </p>
-
+                        
                     <p>
-                        Das Formular in <code>newPostForm.jsp</code> wird dazu folgendermaßen angepasst:
+                        Das Formular in <code>newPostForm.html</code> wird dazu folgendermaßen angepasst:
                     </p>
 
-                    <pre><code class="html">&lt;form:form method="POST" class="form" modelAttribute="newBlogPostCmd"&gt;
-    &lt;form:label path="title"&gt;Titel:&lt;/form:label&gt;
-    &lt;form:input path="title" placeholder="Titel" /&gt;
-    &lt;form:errors path="title" /&gt;
-    &lt;br&gt;
-    &lt;form:label path="text"&gt;Text:&lt;/form:label&gt;
-    &lt;form:textarea path="text" placeholder="Text" /&gt;
-    &lt;form:errors path="text" /&gt;
-    &lt;br&gt;
-    &lt;button &gt;Speichern&lt;/button&gt;
-&lt;/form:form&gt;
-</code></pre>
+                    <pre><code class="html">&lt;!DOCTYPE html&gt;
+
+&lt;html xmlns:th="http://www.thymeleaf.org"&gt;
+
+&lt;body&gt;
+&lt;form action="#" th:action="@{/new}" th:object="${newBlogPostCmd}" method="post"&gt;
+    &lt;table&gt;
+        &lt;tr&gt;
+            &lt;td&gt;&lt;label for="title"&gt;Titel:&lt;/label&gt;&lt;/td&gt;
+            &lt;td&gt;&lt;input type="text" id="title" name="title" th:field="*{title}"/&gt;&lt;/td&gt;
+            &lt;td th:if="${#fields.hasErrors('title')}" th:errors="*{title}"&gt;Darf nicht leer sein!&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+            &lt;td&gt;&lt;label for="text"&gt;Text:&lt;/label&gt;&lt;/td&gt;
+            &lt;td&gt;&lt;textarea id="text" name="text" th:field="*{text}"&gt;&lt;/textarea&gt;&lt;/td&gt;
+            &lt;td th:if="${#fields.hasErrors('text')}" th:errors="*{text}"&gt;Darf nicht leer sein!&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+            &lt;td&gt;&lt;input type="submit" id="submit" value="Speichern"/&gt;&lt;/td&gt;
+        &lt;/tr&gt;
+    &lt;/table&gt;
+&lt;/form&gt;
+
+&lt;form th:action="@{/logout}" method="post"&gt;
+    &lt;input type="submit" value="Logout"/&gt;
+&lt;/form&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
                     <p>
                         Gehen wir das neue Formular schrittweise durch:
                     </p>
@@ -2297,52 +2323,19 @@ public class BlogController {
                     <ul>
                         <li>
                             <p>
-                                Zunächt hat das <span class="code-html">&lt;form:form /&gt;</span>-Element einen weiteren 
-                                Parameter bekommen: mit <code>modelAttribute</code> geben wir an, in welchem Model-Attribut sich das 
-                                Commandobjekt befindet, auf das dieses Formular sich bezieht. Daher mussten auch in 
-                                <code>showNewPostForm()</code> ein leeres Commandobjekt erzeugen werden.
+                                Wir benutzen nun eine HTML-Tabelle, um das Formular etwas übersichtlicher und Fehlermeldungen an der richtigen Stelle
+                                anzeigen zu können.
                             </p>
                         </li>
                         <li>
                             <p>
-                                Die <span class="code-html">&lt;input /&gt;</span>-tags wurden durch <span class="code-html">&lt;form:input /&gt;</span>
-                                ersetzt.
-                                Diese akzeptieren im <code>path</code>-Attribut den Namen des Attributs im Command-Objekt welches diesem Eingabefeld
-                                entspricht. Das wird unter anderem
-                                verwendet, um das Eingabefeld eventuell mit vorherigen Benutzereingaben vorzubelegen. Das <code>path</code>-Attribut
-                                des
-                                <span class="code-html">&lt;form:input /&gt;</span>
-                                wird in der entstehenden HTML-Ausgabe durch 'id' und 'name' ersetzt. Damit funktionieren z.B. die
-                                'for'-Attribute von Labels oder CSS-Styles weiterhin genauso wie vorher.
-                                <br/>
-                                Das <span class="code-html">&lt;form:input /&gt;</span>-Element könnte zusätzlich je nach Validierungsergebniss 
-                                des Formularfelds unterschiedliche CSS-Klassen haben. Dafür ließe sich statt dem <code>class</code>-Attribut 
-                                <code>cssClass</code> und <code>cssErrorClass</code> setzen.
+                                Wir haben nun neue 
+                                <span class="code-html">&lt;td th:if="${#fields.hasErrors('title')}" th:errors="*{title}"&gt;</span>-Tags.
+                                Diese werden nur bei Fehlern im angegebenen Feld angezeigt.
+
                             </p>
                         </li>
 
-                        <li>
-
-                            <p>
-                                Die <span class="code-html">&lt;label /&gt;</span>-tags haben wir durch <span class="code-html">&lt;form:label /&gt;</span>
-                                ersetzt.
-                                Diese akzeptieren auch im <code>path</code>-Attribut den Namen des Attributs im Command-Objekt, welche sie repräsentieten.
-                                Das <code>path</code>-Attribut
-                                des
-                                <span class="code-html">&lt;form:label /&gt;</span>
-                                wird in der entstehenden HTML-Ausgabe durch 'for' ersetzt, sodass es weiterhin dem 
-                                entsprechenden <span class="code-html">&lt;input /&gt;</span> zugeordnet ist.
-                                <br/>
-                                Außerdem ließen sich wieder <code>cssClass</code> und <code>cssErrorClass</code> setzen.
-                            </p>
-                        </li>      
-                        <li>
-
-                            <p>
-                                Schließlich werden mit <span class="code-html">&lt;form:errors/&gt;</span> für die einzelnen Formularfelder
-                                jeweils die bei der Validierung aufgetretenen Fehlermeldungen ausgeben.
-                            </p>
-                        </li>
                     </ul>
                     <hr/>
                     <h3>
@@ -2447,7 +2440,7 @@ public class BlogController {
         for (BlogPostEntity blogPostEntity : blogPostRepository.findByAuthor(userEntity)) {
             result.add(new BlogPost(
                     blogPostEntity.getId().toString(),
-                    (User) userDetailsService.loadUserByUsername(blogPostEntity.getAuthor().getUsername()),
+                    userDetailsService.loadUserByUsername(blogPostEntity.getAuthor().getUsername()),
                     blogPostEntity.getTitle(),
                     blogPostEntity.getText()
             ));
@@ -2460,17 +2453,18 @@ public class BlogController {
                         Um eine Liste aller Nutzer anzeigen zu können, wird außerdem ein Interface für einen 
                         UserService benötigt, welches eine Methode zum Laden aller Nutzer bereitstellt.
                         <br>
-                        Dazu wird das neue Interface <code>UserService</code> im Package <code>de.unibielefeld.techfak.tdpe.jsp.domain</code> erstellt:
+                        Dazu wird das neue Interface <code>BlogUserDetailsService</code> im Package <code>de.unibielefeld.techfak.tdpe.thymeleaf.domain</code> erweitert:
                     </p>
 
-                    <pre><code class="java">public interface UserService {
-    List&lt;User&gt; getAll();
+                    <pre><code class="java">public interface BlogUserDetailsService extends UserDetailsService {
+    User loadUserByUsername(String s) throws UsernameNotFoundException;
+    void addUser(User user);
+    List<User> getAll();
     User getOne(String username);
-}
-</code></pre>
+}</code></pre>
 
                     <p>
-                        Dieses Interface wird nun in <code>BlogUserDetailsService</code>  implementiert:
+                        Die neuen Methoden werden nun in <code>BlogUserDetailsServiceImpl</code>  implementiert:
                         </p>
                     
                         <pre><code class="jave">@Override
@@ -2505,15 +2499,19 @@ public User getOne(String username) {
                         um den eben erstellten Service erweitert.
                     </p>
                     
-                    <pre><code class="java">private final BlogService blogService;
+                    <pre><code class="java">public class BlogController {
+    private final BlogService blogService;
+    private final BlogUserDetailsService blogUserDetailsService;
 
-private final UserService userService;
+    @Autowired
+    public BlogController(BlogService blogService, BlogUserDetailsService blogUserDetailsService) {
+        this.blogService = blogService;
+        this.blogUserDetailsService = blogUserDetailsService;
+    }
 
-@Autowired
-public BlogController(BlogService blogService, UserService userService) {
-    this.blogService = blogService;
-    this.userService = userService;
-}    
+    //stuff
+
+}
 </code></pre>
                     
                     <p>
@@ -2524,7 +2522,7 @@ public BlogController(BlogService blogService, UserService userService) {
                     <pre><code class="java">@RequestMapping("/")
 public String index(Model model) {
     model.addAttribute("blogPosts", this.getBlogPosts());
-    model.addAttribute("authors", userService.getAll());
+    model.addAttribute("authors", blogUserDetailsService.getAll());
     return "index";
 }
 </code></pre>
@@ -2539,11 +2537,11 @@ public String index(Model model) {
                     
                     <pre><code class="java">@RequestMapping(value = "/byusername")
 public String showbyUsername(@RequestParam(value = "username") String username, Model model) {
-    User user = userService.getOne(username);
-        
-    List&lt;BlogPost&gt; blogPosts = blogService.getAll(user);
+    User user = blogUserDetailsService.getOne(username);
+
+    List<BlogPost> blogPosts = blogService.getAll(user);
     model.addAttribute("blogPosts", blogPosts);
-    model.addAttribute("authors", userService.getAll());
+    model.addAttribute("authors", blogUserDetailsService.getAll());
     return "index";
 }
 </code></pre>
@@ -2555,15 +2553,15 @@ public String showbyUsername(@RequestParam(value = "username") String username, 
                     <pre><code class="java">@RequestMapping(value = "/search")
 public String search(@RequestParam(value = "search_query") String searchQuery, Model model) {
 
-    List&lt;BlogPost&gt; searched = getBlogPosts().stream()
-        .filter(blogPost
-                -> blogPost.getAuthor().getFullName().contains(searchQuery)
-                || blogPost.getAuthor().getUsername().contains(searchQuery))
-        .collect(Collectors.toList());
-        
-        
+    List<BlogPost> searched = getBlogPosts().stream()
+            .filter(blogPost
+                    -> blogPost.getAuthor().getFullName().contains(searchQuery)
+                    || blogPost.getAuthor().getUsername().contains(searchQuery))
+            .collect(Collectors.toList());
+
+
     model.addAttribute("blogPosts", searched);
-    model.addAttribute("authors", userService.getAll());
+    model.addAttribute("authors", blogUserDetailsService.getAll());
     return "index";
 }
 </code></pre>
@@ -2605,10 +2603,10 @@ public String search(@RequestParam(value = "search_query") String searchQuery, M
                     </p>
                     
                     <p>
-                        In der <code>index.jsp</code> wird dazu zuerst innerhalb des bodys eine neue Form hinzugefügt. 
+                        In der <code>index.html</code> wird dazu zuerst innerhalb des bodys eine neue Form hinzugefügt. 
                         Diese stellt die Suchmaske für das Suchen nach Autoren dar:
                     </p>
-                    <pre><code class="html">&lt;form method="GET" action="&lt;spring:url value="/search" /&gt;"&gt;
+                    <pre><code class="html">&lt;form method="get" action="#" th:action="@{/search}"&gt;
     &lt;input name="search_query" placeholder="Suche..."/&gt;
     &lt;button&gt;Suchen&lt;/button&gt;
 &lt;/form&gt;
@@ -2618,21 +2616,17 @@ public String search(@RequestParam(value = "search_query") String searchQuery, M
                     <p>
                         Zusätzlich zu der Form wird noch eine Liste von Autoren hinzugefügt, die auf die jeweiligen Beiträge eines Autors verlinken:
                     </p>
-                    <pre><code class="html">&lt;c:forEach items="${authors}" var="author"&gt;
-    &lt;spring:url value="/byusername" var="author_link"&gt;
-        &lt;spring:param name="username" value="${author.username}"/&gt;
-    &lt;/spring:url&gt;
-
-    &lt;a href="${author_link}"&gt;&lt;c:out value="${author.fullName}"/&gt;&lt;/a&gt;
-&lt;/c:forEach&gt;
+                    <pre><code class="html">&lt;th:block th:each="author:${authors}"&gt;
+    &lt;a th:href="@{/byusername(username=${author.username})}" th:text="${author.fullName}"/&gt;
+    &lt;br/&gt;
+&lt;/th:block&gt;
 </code></pre>
                     
                     <p>
                         Dies ist wieder eine forEach-Schleife, die über die im <code>BlogController</code> gefüllte 
                         Liste der Autoren iteriert.
-                        Für jeden Autor wird dabei mit &lt;spring:url ...&gt; ein Link für diesen erstellt und in der 
-                        Variable <code>author_link</code> gespeichert. Dem Link wird dabei als Parameter
-                        <code>username</code> der UserName des Autors angehängt.
+                        Für jeden Autor wird dabei mit <span class="code-html">&lt;a th:href=""&gt;</span> ein Link erstellt. 
+                        Dem Link wird dabei als Parameter <code>username</code> der UserName des Autors angehängt.
                     </p>
                     
                 </div>
