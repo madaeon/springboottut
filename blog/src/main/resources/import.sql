@@ -1,2 +1,0 @@
-INSERT INTO blog_posts (id, title, text) VALUES (1, 'mein erster eintrag', 'lorem ipsum dolor sit amet...');
-INSERT INTO blog_posts (id, title, text) VALUES (2, 'mein zweiter eintrag', 'Wants pawn term, dare worsted ladle gull hoe lift wetter murder inner ladle cordage, honor itch offer lodge dock florist. ');

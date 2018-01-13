@@ -1,0 +1,4 @@
+INSERT INTO blog_posts (id, title, text) VALUES (1, 'mein erster eintrag', 'lorem ipsum dolor sit amet...');
+INSERT INTO blog_posts (id, title, text) VALUES (2, 'mein zweiter eintrag', 'Wants pawn term, dare worsted ladle gull hoe lift wetter murder inner ladle cordage, honor itch offer lodge dock florist. ');
+INSERT INTO users (username, password_hash, first_name, last_name, user_role) VALUES ('peter', '$2a$10$WoG5Z4YN9Z37EWyNCkltyeFr6PtrSXSLMeFWOeDUwcanht5CIJgPa', 'Peter', 'Parker', 'USER');
+INSERT INTO users (username, password_hash, first_name, last_name, user_role) VALUES ('bob', '$2a$10$WoG5Z4YN9Z37EWyNCkltyeFr6PtrSXSLMeFWOeDUwcanht5CIJgPa', 'Bob', 'Page', 'USER');
