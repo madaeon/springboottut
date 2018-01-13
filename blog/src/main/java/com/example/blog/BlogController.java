@@ -1,6 +1,8 @@
 package com.example.blog;
 
 import com.example.blog.domain.BlogPost;
+import com.example.blog.domain.BlogService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,6 +12,12 @@ import java.util.List;
 
 @Controller
 public class BlogController {
+    private final BlogService blogService;
+
+    @Autowired
+    public BlogController(BlogService blogService) {
+        this.blogService = blogService;
+    }
 
     @RequestMapping("/")
     public String index(Model model) {
@@ -18,11 +26,6 @@ public class BlogController {
     }
 
     private List<BlogPost> getBlogPosts() {
-        BlogPost blogPost = new BlogPost("1", "erster BlogPost", "Mein erster BlogPost.");
-
-        List<BlogPost> blogPosts = new LinkedList<>();
-        blogPosts.add(blogPost);
-
-        return blogPosts;
+        return blogService.getAllPosts();
     }
 }
