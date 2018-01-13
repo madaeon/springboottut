@@ -2,13 +2,14 @@ package com.example.blog;
 
 import com.example.blog.domain.BlogPost;
 import com.example.blog.domain.BlogService;
+import com.example.blog.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import java.util.LinkedList;
 import java.util.List;
 
 @Controller
@@ -31,9 +32,9 @@ public class BlogController {
         return "newPostForm";
     }
     @RequestMapping(value = "/new", method = RequestMethod.POST)
-    public String saveNewPost(NewBlogPostCmd newBlogPostCmd) {
-        blogService.createBlogPost(new BlogPost("", newBlogPostCmd.getTitle(),
-                newBlogPostCmd.getText()));
+    public String saveNewPost(NewBlogPostCmd newBlogPostCmd, @AuthenticationPrincipal User currentUser) {
+        BlogPost blogPost = new BlogPost(null, currentUser, newBlogPostCmd.getTitle(), newBlogPostCmd.getText());
+        blogService.createBlogPost(blogPost);
         return "redirect:/";
     }
 

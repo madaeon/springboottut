@@ -10,7 +10,7 @@
 <div>
     <table>
         <tr th:each="post:${blogPosts}">
-            <h2 th:text="${post.title}"/>
+            <h2 th:text="${post.title} + ' (von ' + ${post.author.fullName} + ')'"/>
             <p th:text="${post.text}"/>
         </tr>
     </table>
