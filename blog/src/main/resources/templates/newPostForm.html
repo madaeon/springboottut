@@ -3,13 +3,17 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <body>
-<form action="#" th:action="@{/new}" th:object="${newBlogPostCmd}" method="post">
-    <label for="title">Titel:</label>
-    <input type="text" id="title" name="title" th:field="*{title}"/>
-    <label for="text">Text:</label>
-    <textarea id="text" name="text" th:field="*{text}"></textarea>
-    <input type="submit" value="Speichern"/>
-</form>
+    <form action="#" th:action="@{/new}" th:object="${newBlogPostCmd}" method="post">
+        <label for="title">Titel:</label>
+        <input type="text" id="title" name="title" th:field="*{title}"/>
+        <label for="text">Text:</label>
+        <textarea id="text" name="text" th:field="*{text}"></textarea>
+        <input type="submit" value="Speichern"/>
+    </form>
+
+    <form th:action="@{/logout}" method="post">
+        <input type="submit" value="Logout"/>
+    </form>
 
 </body>
 
