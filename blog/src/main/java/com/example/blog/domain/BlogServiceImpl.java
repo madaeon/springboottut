@@ -29,4 +29,17 @@ public class BlogServiceImpl implements BlogService {
         }
         return result;
     }
+
+    @Override
+    public BlogPost createBlogPost(BlogPost blogPost) {
+        BlogPostEntity blogPostEntity = new BlogPostEntity(blogPost.getTitle(), blogPost.getText());
+        BlogPostEntity savedEntity = blogPostRepository.save(blogPostEntity);
+
+        BlogPost saved = new BlogPost(savedEntity.getId().toString(),
+                savedEntity.getTitle(), savedEntity.getText());
+
+        return saved;
+    }
+
+
 }
