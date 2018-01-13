@@ -1,0 +1,11 @@
+﻿Spring Boot - Anfängerprobleme:
+ * Je nach verwendetem maven-projekt und IDE: ggf. ist der tomcat als 'provided' markiert.
+ * Tomcat nicht startbar weil port anderweitig verwendet?
+ * Spring Boot Starter Security: *alle* Seiten brauchen erstmal login!
+ * Sprint Boot Starter Security: @ComponentScan vergessen?
+ * Wie kriegt man den UserDetailsService und den PasswordEncoder aktiviert?
+ * Spring Data: @EnableJPARepositories vergessen?
+ * Spring Data: @ManyToOne vergessen?
+ * Spring Data: Keine JDBC-Driver im Classpath?
+ * Entities brauchen *wirklich* einen Default Constructor. (Im Tutorial erklären!)
+ * @Autowired an Konstruktor vergessen?

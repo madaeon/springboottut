@@ -1,0 +1,2644 @@
+﻿<!DOCTYPE html>
+<html lang="de">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+        <meta charset='utf-8'/>
+        <link rel="stylesheet" href="css/bootstrap.css">
+        <link rel="stylesheet" href="css/bootstrap-theme.css">
+        <link rel="stylesheet" href="css/highlight/idea.css">
+        <script src="js/jquery.js"></script>
+        <script src="js/bootstrap.js"></script>
+        <script src="js/highlight.pack.js"></script>
+        <style>
+            pre {
+                padding: 0;
+                font-family: monospace;
+                background-color: #f1f1ff;
+            }
+
+            body {
+                background-color: #eeeeee;
+                font-family: Helvetica;
+                text-align: justify;
+            }
+
+            hr {
+                margin-top: 50px;
+                margin-bottom: 50px;
+                border-color: #85858d;
+            }
+
+            .container {
+                background-color: white;
+                border-radius: 15px;
+            }
+
+            .jumbotron > .container {
+                background-color: transparent;
+            }
+        </style>
+        <script>
+            $(function () {
+                $('pre code').each(function (i, block) {
+                    hljs.highlightBlock(block);
+                });
+                var highlightInline = function (cssClass, language) {
+                    $("." + cssClass).each(function (i, block) {
+                        var jqBlock = $(block);
+                        var result = hljs.highlight(language, jqBlock.text());
+                        if (result.r) {
+                            jqBlock.html(result.value);
+                        }
+                    });
+                };
+                highlightInline("code-java", "java");
+                highlightInline("code-html", "html");
+            });
+        </script>
+        <title>Spring Boot Tutorial - Ein Blog</title>
+    </head>
+    <body>
+
+        <div class='container'>
+            <h1>Spring Boot Tutorial - Ein Blog</h1>
+
+            <!--Einleitung-->
+            <div>
+
+                <div class="well">
+                    <h2>Ziel</h2>
+
+                    <p>Ziel dieses Tutorials ist es, Entwicklern mit wenig oder gar keiner Erfahrung in der Entwicklung von
+                        Webanwendungen
+                        einen ersten Einblick in die Entwicklung mit Spring zu verschaffen. </p>
+
+                    <p>Hierfür wird auf Basis eines der Standard-Archetypes von Spring Boot ein Projekt aufgesetzt, das im Laufe
+                        einiger
+                        Schritte zu einem Funktionsfähigen (wenn auch rudimentären) Blog entwickelt wird.</p>
+                </div>
+
+
+                <p>Folgende Werkzeuge, Frameworks und sonstige Technologien sind dazu eingeplant:<br/>
+                <table class="table table-condensed">
+                    <tr class="row">
+                        <td><a href="http://maven.apache.org/">maven</a></td>
+                        <td>Build-Tool.<br/><b>Alternative:</b> <a href="https://gradle.org/">Gradle</a></td>
+                    </tr>
+                    <tr class="row">
+                        <td><a href="http://spring.io/">spring</a></td>
+                        <td>Framework für Dependency-Injection. Hier alternativlos!</td>
+                    </tr>
+                    <tr class="row">
+                        <td><a href="http://www.h2database.com/">H2</a></td>
+                        <td>Embedded-Datenbank.<br/><b>Alternativen:</b> <a href="http://db.apache.org/derby/">Derby</a>, <a
+                                href="http://sqlite.org/">SQLite</a> (z.B. mit <a href="https://bitbucket.org/xerial/sqlite-jdbc">Xerial</a>)
+                        </td>
+                    </tr>
+                    <tr class="row">
+                        <td><a href="http://www.oracle.com/technetwork/java/javaee/jsp/index.html">JSP</a></td>
+                        <td>Template-Sprache<br/><b>Alternativen:</b><a href="http://www.thymeleaf.org/">Thymeleaf</a>, <a
+                                href="https://velocity.apache.org/">Velocity</a>, <a href="http://freemarker.org/">Freemarker</a>
+                        </td>
+                    </tr>
+                </table>
+                <hr>
+            </div>
+
+
+
+            <!--Schritt 1 - Projekt erstellen-->
+            <div class="well">
+
+
+                <h2>Schritt 1 - Erzeugen des Projektes</h2>
+
+                <div>
+
+                    <p>Zunächst erstellen wir ein neues Maven-Projekt. Dazu in einem Terminal folgendes Ausführen:<br/>(Im
+                        Allgemeinen
+                        wird hier davon ausgegangen, dass das Tutorial unter Unix
+                        durchgearbeitet wird und die verwendete Shell - soweit es einen Unterschied macht - bash ist. Windows-Nutzer
+                        müssen ggf. Umdenken oder msys verwenden.)</p>
+                    <pre><code class="bash">mvn -B archetype:generate \
+    -DarchetypeGroupId=org.springframework.boot \
+    -DarchetypeArtifactId=spring-boot-sample-web-jsp-archetype \
+    -DgroupId=de.unibielefeld.techfak.tdpe \
+    -DartifactId=blog
+</code></pre>
+
+                    <p>Wie das hier generierte Projekt im Detail aussieht, sehen wir uns im nächsten Schritt an. Vorher probieren
+                        wir
+                        aber noch aus, was das neue Projekt schon kann:</p>
+                    <pre><code class="bash">cd blog
+mvn spring-boot:run</code></pre>
+
+                </div>
+
+                <p>
+                    Die Ausgabe auf der Konsole sollte, nach den üblichen Meldungen die Anzeigen das Maven das Projekt baut, in etwa
+                    so aussehen:
+                </p>
+
+
+                <pre><code>    [INFO] --- spring-boot-maven-plugin:1.0.2.RELEASE:run (default-cli) @ blog ---
+
+    . ____ _ __ _ _
+    /\\ / ___'_ __ _ _(_)_ __ __ _ \ \ \ \
+    ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+    \\/ ___)| |_)| | | | | || (_| | ) ) ) )
+    ' |____| .__|_| |_|_| |_\__, | / / / /
+    =========|_|==============|___/=/_/_/_/
+    :: Spring Boot :: (v1.0.2.RELEASE)
+
+    2015-02-19 20:10:11.430 INFO 7824 --- [lication.main()] d.u.t.tdpe.jsp.SampleWebJspApplication : Starting
+    SampleWebJspApplication on Themis with PID 7824 (c:\Users\XXXX\Documents\git\blog\target\classes started by jkrafczy
+    in c:\Users\XXXX\Documents\git\blog)
+    2015-02-19 20:10:11.458 INFO 7824 --- [lication.main()] ationConfigEmbeddedWebApplicationContext : Refreshing
+    org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext@3dbe19c: startup date [Thu
+    Feb 19 20:10:11 CET 2015]; root of context hierarchy
+    2015-02-19 20:10:12.117 INFO 7824 --- [lication.main()] .t.TomcatEmbeddedServletContainerFactory : Server
+    initialized with port: 8080
+    2015-02-19 20:10:12.234 INFO 7824 --- [lication.main()] o.apache.catalina.core.StandardService : Starting service
+    Tomcat
+    2015-02-19 20:10:12.235 INFO 7824 --- [lication.main()] org.apache.catalina.core.StandardEngine : Starting Servlet
+    Engine: Apache Tomcat/7.0.52
+    2015-02-19 20:10:12.292 INFO 7824 --- [ost-startStop-1] o.a.c.c.C.[Tomcat].[localhost].[/] : Initializing Spring
+    embedded WebApplicationContext
+    2015-02-19 20:10:12.292 INFO 7824 --- [ost-startStop-1] o.s.web.context.ContextLoader : Root WebApplicationContext:
+    initialization completed in 837 ms
+    2015-02-19 20:10:12.596 INFO 7824 --- [ost-startStop-1] o.s.b.c.e.ServletRegistrationBean : Mapping servlet:
+    'dispatcherServlet' to [/]
+    2015-02-19 20:10:12.596 INFO 7824 --- [ost-startStop-1] o.s.b.c.embedded.FilterRegistrationBean : Mapping filter:
+    'hiddenHttpMethodFilter' to: [/*]
+    2015-02-19 20:10:12.806 INFO 7824 --- [lication.main()] o.s.w.s.handler.SimpleUrlHandlerMapping : Mapped URL path
+    [/**/favicon.ico] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+    2015-02-19 20:10:12.953 INFO 7824 --- [lication.main()] s.w.s.m.m.a.RequestMappingHandlerMapping : Mapped
+    "{[/],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}" onto public java.lang.String
+    de.unibielefeld.techfak.tdpe.jsp.WelcomeController.welcome(java.util.Map&lt;java.lang.String, java.lang.Object&gt;)
+    2015-02-19 20:10:12.963 INFO 7824 --- [lication.main()] o.s.w.s.handler.SimpleUrlHandlerMapping : Mapped URL path
+    [/webjars/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+    2015-02-19 20:10:12.964 INFO 7824 --- [lication.main()] o.s.w.s.handler.SimpleUrlHandlerMapping : Mapped URL path
+    [/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+    2015-02-19 20:10:13.030 INFO 7824 --- [lication.main()] o.s.j.e.a.AnnotationMBeanExporter : Registering beans for
+    JMX exposure on startup
+    2015-02-19 20:10:13.055 INFO 7824 --- [lication.main()] s.b.c.e.t.TomcatEmbeddedServletContainer : <b>Tomcat started
+    on
+    port(s): 8080/http</b>
+    2015-02-19 20:10:13.057 INFO 7824 --- [lication.main()] d.u.t.tdpe.jsp.SampleWebJspApplication : Started
+    SampleWebJspApplication in 1.989 seconds (JVM running for 3.802)
+</code></pre>
+
+                <hr>
+
+                <p>Besonders wichtig ist hier der fett markierte Teil - Die Anwendung hat automatisch einen Tomcat gestartet und
+                    ist
+                    nun auf <a target="_blank" href="http://localhost:8080">http://localhost:8080</a> erreichbar.</p>
+
+                <p>Ruft man die Webapplikation nun im Browser auf, sollte sich in etwa folgendes Bild zeigen:</p>
+                <img src="img/step1-webapp.png" class="center-block" />
+
+                <hr>
+
+                <h3>
+                    Java 8
+                </h3>
+
+                <p>
+                    Das erstellte Projekt hat bisher Java 6 voreingestellt. Da seit dem einige sinnvolle Features hinzugekommen sind, wird die Javaversion auf 1.8 geändert:
+                </p>
+                <p>
+
+                </p>
+
+                <p>Dazu wird in der pom.xml eine java.version property hinzugefügt.
+                    <!-- Dies könnte die Teilnehmer verwirren - Der Block ist in der Datei bereits vorhanden und muss *verändert* werden, nicht
+                    hinzugefügt! -->
+                    Die &lt;properties&gt;-Sektion der pom.xml sollte nun so aussehen:</p>
+                <pre><code class="xml">&lt;properties&gt;
+    &lt;main.basedir&gt;${basedir}/../..&lt;/main.basedir&gt;
+    &lt;m2eclipse.wtp.contextRoot&gt;/&lt;/m2eclipse.wtp.contextRoot&gt;
+    &lt;java.version&gt;1.8&lt;/java.version&gt;
+&lt;/properties&gt;</code> </pre>
+            </div>
+            <hr>
+
+            <!--Schritt 2 - Code verstehen-->
+            <div>
+                <div class="well">
+                    <h2>Schritt 2 - Erzeugten Code verstehen</h2>
+
+                    <h3>SampleWebJspApplication.java</h3>
+                    Das Projekt enthält zwei Java-Klassen: Die erste die wir uns ansehen wollen ist SampleWebJspApplication und
+                    sollte
+                    wie folgt aussehen:
+                    <pre><code class="java">@Configuration
+@EnableAutoConfiguration
+@ComponentScan
+public class SampleWebJspApplication extends SpringBootServletInitializer {
+
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        return application.sources(SampleWebJspApplication.class);
+    }
+
+    public static void main(String[] args) throws Exception {
+        SpringApplication.run(SampleWebJspApplication.class, args);
+    }
+
+}</code></pre>
+                    <p>Diese Klasse kümmert sich generell um den Programmstart, bzw. weist - je nachdem wie die Anwendung gestartet
+                        wurde - auf passende
+                        Art Spring an, die notwendige Initialisierung und Konfiguration durchzuführen.</p>
+
+                    <h4>Zunächst die Annotationen an der Klasse:</h4>
+
+                    <dl>
+                        <dt>
+                        <div class="code-java">@Configuration</div>
+                        </dt>
+                        <dd>Diese Klasse enthält Informationen die zur Konfiguration der Anwendung beim Programmstart notwendig sind
+                        </dd>
+                        <dt>
+                        <div class="code-java">@EnableAutoConfiguration</div>
+                        </dt>
+                        <dd>Weist Spring Boot an, für diverse Konfigurationen (z.B. Template-Pfade, Datenbankverbindung) falls nötig
+                            Standardwerte anzunehmen
+                        </dd>
+                        <dt>
+                        <div class="code-java">@ComponentScan</div>
+                        </dt>
+                        <dd>Suche im Classpath nach Klassen die z.B. mit @Controller oder @Service annotiert sind und mache sie als
+                            Beans verfügbar
+                        </dd>
+                    </dl>
+
+                    <h4>Nun zu den Methoden:</h4>
+
+
+                    <pre>
+<code class="java">@Override
+protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+    return application.sources(SampleWebJspApplication.class);
+}
+</code></pre>
+                    <p>
+                        <!-- Was ist ein Tomcat? => Glossar, Beschreibung, externer Link -->
+                        Dies ist der Einstiegspunkt für die Applikation, wenn sie auf einem separatem Tomcat deployed wurde.
+                        Ähnlich zur Verwendung von SpringApplication.run() in der unten erklärten main-Methode wird hier Spring Boot
+                        darüber Informiert, wo es anfangen soll nach Konfiguration zu suchen.
+                    </p>
+
+                    <pre>
+<code class="java">public static void main(String[] args) throws Exception {
+    SpringApplication.run(SampleWebJspApplication.class, args);
+}</code></pre>
+                    <p>
+                        Dies ist der Einstiegspunkt für die Applikation, wenn sie als .jar gebaut wurde.
+                        SpringApplication.run() erwartet als Parameter einen oder mehrere Quellen von Konfigurationsdaten - z.B.
+                        mit @Configuration annotierte Klassen.
+                    </p>
+
+                    <h3>WelcomeController.java</h3>
+                    <pre><code class="java">@Controller
+public class WelcomeController {
+
+    @Value(&quot;${application.message:Hello World}&quot;)
+    private String message = &quot;Hello World&quot;;
+
+    @RequestMapping(&quot;/&quot;)
+    public String welcome(Map&lt;String, Object&gt; model) {
+        model.put(&quot;time&quot;, new Date());
+        model.put(&quot;message&quot;, this.message);
+        return &quot;welcome&quot;;
+    }
+
+}</code></pre>
+                    <p>
+                        Diese Klasse ist (wie die Annotation und der Name bereits andeuten...) ein Controller. Controller in einer
+                        Spring
+                        WebMVC-Anwendung
+                        nehmen HTTP-Anfragen entgegen, erzeugen ein geeignetes Model und benennen die zu verwendende View. Sie
+                        bieten
+                        den Startpunkt, von dem aus
+                        Aktionen des Benutzers verarbeitet werden.
+                    </p>
+
+
+                    <pre>
+<code class="java">    @RequestMapping(&quot;/&quot;)
+    public String welcome(Map&lt;String, Object&gt; model) {
+        model.put(&quot;time&quot;, new Date());
+        model.put(&quot;message&quot;, this.message);
+        return &quot;welcome&quot;;
+    }
+</code></pre>
+                    <p>
+                        Das @RequestMapping("/") deutet an, dass diese Methode aufgerufen werden soll wenn eine HTTP-Anfrage auf
+                        den Pfad "/" stattfindet. <br/>
+                        Die Methode gibt den Namen einer view zurück, die für die Antwort an den Browser dargestellt werden soll. Der
+                        zurückgelieferte Viewname "welcome" wird in dieser Anwendung
+                        letztendlich auf src/main/java/webapp/WEB-INF/jsp/welcome.jsp abgebildet.<br/>
+                        <!-- wie funktioniert das letztendlich? -->
+                        Das als parameter übergebene Model (hier vom typ java.util.Map, in der Regel eher vom Typ
+                        org.springframework.ui.Model) wird mit Daten befüllt, die in der View angezeigt werden sollen.
+                    </p>
+
+
+                    <pre><code class="java">    @Value("${application.message:Hello World}")
+    private String message = "Hello World";
+</code></pre>
+                    <p>
+                        Die Initialisierung von message mit ' = "Hello World"' hat hier keine Bedeutung und kann auch weg gelassen
+                        werden.
+                        <br/>
+                        Spannend ist vor allem die Annotation: Mit @Value("${application.message}") wird Spring angewiesen, diese
+                        Variable mit einem Wert aus der Datei <i>application.properties</i> vorzubelegen, der unter dem Schlüssel <i>application.message</i>
+                        zu finden ist. <br/>
+                        Durch das hinzufügen von ":Hello World" in der Annotation wird "Hello World" als Standardbelegung angenommen,
+                        falls
+                        der gesuchte Schlüssel in den application.properties nicht gefunden wurde. <br/>
+                        Würde die Standardbelegung im @Value weggelassen, gäbe es statt dessen beim Anwendungsstart eine Exception wenn
+                        die
+                        entsprechende Property fehlt.
+                    </p>
+
+                    <h3>application.properties</h3>
+                    <!-- Wo liegt die Datei? -->
+                    <pre><code>    spring.view.prefix: /WEB-INF/jsp/
+    spring.view.suffix: .jsp
+    application.message: Hello Phil
+</code></pre>
+                    <p>Die ersten beiden Zeilen geben an, wie von Viewnamen auf Templates, in diesem Beispiel JSPs, abgebildet
+                        wird.
+                        <br/>
+                        Die application.message-Zeile liefert die Belegung für das per @Value() befüllte Feld von
+                        SampleWebJspApplication.
+                    </p>
+
+                    <h3>JSP</h3>
+                    <!-- Wo liegt die Datei? -->
+                    <pre><code class="html">&lt;!DOCTYPE html&gt;
+
+&lt;%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%&gt;
+&lt;%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%&gt;
+
+&lt;html lang="en"&gt;
+
+    &lt;body&gt;
+        &lt;c:url value="/resources/text.txt" var="url"/&gt;
+        &lt;spring:url value="/resources/text.txt" htmlEscape="true" var="springUrl" /&gt;
+        Spring URL: ${springUrl} at ${time}
+        &lt;br&gt;
+        JSTL URL: ${url}
+        &lt;br&gt;
+        Message: ${message}
+    &lt;/body&gt;
+
+&lt;/html&gt;
+</code></pre>
+                    <p>
+                        Im Kern handelt es sich bei der Datei um eine HTML-Datei, mit einigen Erweiterungen. Dementsprechend
+                        hat sie die übliche Struktur eines HTML Dokuments mit einem HTML5 Doctype.
+                    </p>
+
+                    <p>
+                        Die beiden &lt;@taglib ...&gt;-Zeilen geben an, dass bestimmte Gruppen von JSP-Tags in dieser
+                        Datei verfügbar sein sollen. Die Tag-Bibliothek mit dem Präfix "c" entspricht der JSTL-Core-Taglib,
+                        die allgemeine Grundfunktionen für JSPs anbietet, z.B. Verzweigungen, Schleifen und Textformatierung.
+                        Die Tag-Bibliothek mit dem Präfix "spring" bietet einige darüber hinaus gehende Funktionen, unter Anderem
+                        zur Ausgabe von Übersetzungstexten und Escaping von HTML in Texten zur sicheren Ausgabe.
+                    </p>
+
+                    <p>
+                        Dokumentation für die beiden Tag-Bibliotheken sind unter <a
+                            href="http://docs.oracle.com/javaee/5/jstl/1.1/docs/tlddocs/c/tld-summary.html">docs.oracle.com [JSTL
+                            Core]</a> und <a
+                            href="http://docs.spring.io/spring/docs/current/spring-framework-reference/html/spring.tld.html">docs.spring.io
+                            [spring]</a> zu finden.
+                    </p>
+
+                    <p>
+                        Die ersten beiden Zeilen unter &lt;body&gt; demonstrieren zwei Arten, URLs zur Verwendung z.B. in Links oder
+                        Formularen
+                        zu formatieren. Da die Anwendung auf dem Applikationsserver eventuell unter einem (während der Enwicklung
+                        nicht
+                        bekannten) Pfad-Präfix
+                        gehostet werden kann, werden URLs innerhalb der Anwendung in der Regel nicht direkt in die Templates
+                        geschrieben, sondern mittels c:url oder ähnlichem
+                        sichergestellt dass die URL um ein gegebenenfalls fehlendes Präfix zu ergänzen. In einer Spring-Anwendung
+                        bietet
+                        es sich an, das
+                        etwas flexiblere spring:url zu benutzen.
+                    </p>
+
+                    <p>Beide Varianten erlauben die URL entweder direkt als Ausgabe des Tags zu erzeugen (z.B. <span
+                            class="code-html">&lt;a href="&lt;c:url value="/resources/text.txt"/&gt;"&gt;linktext&lt;/a&gt;</span>,
+                        was hässlich ist) oder
+                        die erzeugte URL statt dessen in eine Variable zu speichern, wie es im Beispiel oben geschieht.</p>
+
+                    <p>Zusätzlich zum Import und der Verwendung von Tag-Bibliotheken zeigt die Template natürlich auch, wie man auf
+                        Variablen zugreift, die entweder im Controller ins Model eingefügt worden sind, oder innerhalb der Template
+                        definiert wurden: Dazu schreibt man ${variablenname}. Handelt es sich bei der Variablen nicht um einen
+                        String
+                        (z.B. "time", was im Controller als ein java.util.Date erzeugt wurde), wird sie zur Ausgabe mittels ihrer
+                        toString()-Methode formatiert.</p>
+
+                </div>
+
+                <hr>
+                <div class="jumbotron">
+                    <div class="container">
+                        <h2>Zusammenfassung</h3>
+                            <ul>
+                                <li>Die Anwendung verwendet generell die Standardeinstellungen die von Spring Boot vorgeschlagen werden
+                                </li>
+                                <li>Bei Anfragen auf dem Pfad / wird die Datei welcome.jsp mit einem Datum und einer Nachricht versorgt und
+                                    gerendert
+                                </li>
+                                <li>Konfigurationsdaten liegen in application.properties</li>
+                                <li>Als Templatesprache wird JSP verwendet. Die Beispielseite zeigt, wie man einfachen Text ausgibt und URLs
+                                    formatiert
+                                </li>
+                            </ul>
+                    </div>
+                </div>
+                <hr>
+            </div>
+
+            <!--Schritt 3 - Domänenmodell-->
+            <div>
+                <div class="well">
+                    <h2>Schritt 3 - Domänenmodell erstellen</h2>
+
+                    <p>
+                        Erster Schritt beim Erstellen des Blogs ist das Erstellen des Domänenmodells - dem Datenmodell, mit dem später gearbeitet wird.
+                        Für den Blog sind dies (erstmal) die einzelnen Blogeinträge, welche eine Titel und einen Text, jeweils Strings, haben sollen.
+                        Um später einzelne Blogeinträge ansprechen zu können, brauchen diese zusätzlich noch eine ID. Diese ist, um möglichst variabel zu sein, auch ein String.
+                    </p>
+
+                    <p>Im Package de.unibielefeld.techfak.tdpe.jsp.domain wird dazu die Klasse BlogPost erstellt:</p>
+                    <!-- Erwähnen: Das Package muss erst erstellt werden! -->
+                    <!-- Erwähnen: Das Package muss erst erstellt werden! -->
+
+                    <pre><code class="java">public class BlogPost {
+    private final String id;
+    private final String title;
+    private final String text;
+
+    public BlogPost(String id, String title, String text) {
+        this.id = id;
+        this.title = title;
+        this.text = text;
+    }
+
+    //... hier bitte getter für alle Felder einfügen. (Keine Setter - die Felder sind final!)
+}
+</code></pre>
+
+
+                </div>
+                <hr>
+
+            </div>
+
+            <!--Schritt 4 - View-->
+            <div>
+                <div class="well">
+                    <h2>Schritt 4 - View erstellen</h2>
+
+                    <p>
+                        Um die BlogPosts anzeigen zu können, wird eine passende View benötigt.
+                        Dazu wird in src/main/webapp/WEB-INF/jsp/ die Datei index.jsp erstellt:
+                    </p>
+
+                    <pre><code class="html">&lt;!DOCTYPE html&gt;
+
+&lt;%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%&gt;
+&lt;%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%&gt;
+
+&lt;html lang="en"&gt;
+
+    &lt;body&gt;
+    
+        &lt;h1&gt;BlogPosts&lt;/h1&gt;
+    
+        &lt;%--@elvariable id="blogPosts" type="java.util.List&lt;de.unibielefeld.techfak.tdpe.jsp.domain.BlogPost&gt;" --%&gt;
+        &lt;c:forEach items="${blogPosts}" var="post"&gt;
+            &lt;div&gt;
+                &lt;h2>&lt;c:out value="${post.title}"/&gt;&lt;/h2&gt;
+                &lt;c:out value="${post.text}"/&gt;
+            &lt;/div&gt;
+        &lt;/c:forEach&gt;
+    &lt;/body&gt;
+
+&lt;/html&gt;
+</code></pre>
+
+                    <p>
+                        Diese ist ähnlich aufgebaut wie die welcome.jsp aus Schritt 2, enthält jedoch einige zusätzliche Dinge:
+                    </p>
+                    <p>
+                        Der @elvariable-Kommentar wird von IntelliJ IDEA ausgewertet, um korrekte Auto-Completion für die Variable
+                        blogPosts liefern zu können. Wir erklären der IDE damit,
+                        dass die (im Controller erzeugte) Variable blogPosts vom Typ List&lt;BlogPost&gt; ist. Zumindest Eclipse
+                        kann
+                        mit diesen Kommentaren leider nicht umgehen.
+                    </p>
+
+                    <p>
+                        Direkt darunter findet sich eine Zeile mit &lt;c:forEach&gt; - dies ist eine der in Schritt 2 erwähnten
+                        Kontrollstrukturen aus der JSTL-Core Tagbibliothek. Der Inhalt des
+                        c:forEach-Blocks wird für jedes vom Ausdruck ${blogPosts} zurückgelieferte Element einmal durchgeführt, und
+                        das
+                        jeweilige Element in der Laufvariable post verfügbar gemacht. Also ein ganz normales for-each, so wie in
+                        Java.
+                    </p>
+
+                    <p>Zur Ausgabe des Blog-Titels und -texts wird hier c:out verwendet, statt wie in welcome.jsp die Variable
+                        einfach
+                        nur in ${} einzuschlie&szlig;en.
+                        Dies dient dazu, eventuell vorhandenes HTML im Blogeintrag zu escapen, um Sicherheitslücken (<a
+                           target="_blank" href="http://en.wikipedia.org/wiki/Cross-site_scripting">XSS</a>) zu vermeiden und korrekte
+                        Darstellung
+                        einiger Zeichen wie
+                        &lt; oder &amp; sicherzustellen.
+                    </p>
+
+                </div>
+                <hr>
+            </div>
+
+
+            <!--Schritt 5 - Controller-->
+            <div>
+                <div class="well">
+                    <h2>Schritt 5 - Controller erstellen</h2>
+
+                    <p>
+                        Damit die eben erstellte View angezeigt werden kann, muss noch eine Controller erstellt werden, 
+                        der BlogPosts zum anzeigen bereitstellt und die anzuzeigende View angibt.
+                    </p>
+
+                    <p>
+                        Dazu wird in de.unibielefeld.techfak.tdpe.jsp die Klasse BlogController erstellt:
+                    </p>
+
+                    <pre><code class="java">import de.unibielefeld.techfak.tdpe.jsp.domain.BlogPost;
+import java.util.LinkedList;
+import java.util.List;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+public class BlogController {
+
+    @RequestMapping("/")
+    public String index(Model model) {
+        model.addAttribute("blogPosts", this.getBlogPosts());
+        return "index";
+    }
+
+    private List&lt;BlogPost&gt; getBlogPosts() {
+        BlogPost blogPost = new BlogPost("1", "erster BlogPost", "Mein erster Blogpost.");
+
+        List&lt;BlogPost&gt; blogPosts = new LinkedList&lt;BlogPost&gt;();
+        blogPosts.add(blogPost);
+
+        return blogPosts;
+    }
+}
+</code></pre>
+
+                    <p>
+                        Damit in der View auch BlogPosts angezeigt werden, 
+                        wird in getBlogPosts() vorläufig eine feste Liste von BlogPosts erstellt.
+                        Später stehen diese natürlich nicht mehr im Programm, sondern werden z.B. aus einer Datenbank geladen, 
+                        vorläufig reicht uns dies aber, um zu testen, ob unser Contoller überhaupt funktioniert.
+                    </p>
+
+                </div>
+                <hr>
+            </div>
+
+            <!--Schritt 6 -Fehler beseitigen & testen-->
+            <div>
+
+                <div class="well">
+                    <h2>Schritt 6 - Ausprobieren und Fehler beseitigen</h2>
+
+                    <p>
+                        Mit <code class="bash">mvn spring-boot:run</code> kann man das Priojekt jetzt bauen und starten.
+                        Versucht man dies, startet Spring zwar, bricht dann jedoch mit einer langen Fehlermelung ab:
+                    </p>
+
+                    <!-- Hinweis darauf, dass der Stacktrace gekürzt wurde [mind. ein Caused By fehlt]-->
+                    <pre><code class="bash">[WARNING] 
+java.lang.reflect.InvocationTargetException
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:483)
+	at org.springframework.boot.maven.RunMojo$LaunchRunner.run(RunMojo.java:300)
+	at java.lang.Thread.run(Thread.java:745)
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'requestMappingHandlerMapping' defined in class path resource [org/springframework/web/servlet/config/annotation/DelegatingWebMvcConfiguration.class]: Invocation of init method failed; nested exception is java.lang.IllegalStateException: Ambiguous mapping found. Cannot map 'welcomeController' bean method 
+public java.lang.String de.unibielefeld.techfak.tdpe.jsp.WelcomeController.welcome(java.util.Map&lt;java.lang.String, java.lang.Object&gt;)
+to {[/],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}: There is already 'blogController' bean method
+public java.lang.String de.unibielefeld.techfak.tdpe.jsp.BlogController.index(org.springframework.ui.Model) mapped.
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1553)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:539)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:475)
+	at org.springframework.beans.factory.support.AbstractBeanFactory$1.getObject(AbstractBeanFactory.java:304)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:228)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:300)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:195)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:703)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:760)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:482)
+	at org.springframework.boot.context.embedded.EmbeddedWebApplicationContext.refresh(EmbeddedWebApplicationContext.java:120)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:648)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:311)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:909)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:898)
+	at de.unibielefeld.techfak.tdpe.jsp.SampleWebJspApplication.main(SampleWebJspApplication.java:37)
+	... 6 more
+Caused by: java.lang.IllegalStateException: Ambiguous mapping found. Cannot map 'welcomeController' bean method 
+public java.lang.String de.unibielefeld.techfak.tdpe.jsp.WelcomeController.welcome(java.util.Map&lt;java.lang.String, java.lang.Object&gt;)
+to {[/],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}: There is already 'blogController' bean method
+public java.lang.String de.unibielefeld.techfak.tdpe.jsp.BlogController.index(org.springframework.ui.Model) mapped.
+	at org.springframework.web.servlet.handler.AbstractHandlerMethodMapping.registerHandlerMethod(AbstractHandlerMethodMapping.java:192)
+	at org.springframework.web.servlet.handler.AbstractHandlerMethodMapping.detectHandlerMethods(AbstractHandlerMethodMapping.java:164)
+	at org.springframework.web.servlet.handler.AbstractHandlerMethodMapping.initHandlerMethods(AbstractHandlerMethodMapping.java:124)
+	at org.springframework.web.servlet.handler.AbstractHandlerMethodMapping.afterPropertiesSet(AbstractHandlerMethodMapping.java:103)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping.afterPropertiesSet(RequestMappingHandlerMapping.java:126)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1612)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1549)
+	... 21 more
+</code></pre>
+
+                    <p>
+                        Lässt man sich dabei nicht von den sehr kryptischen Fehlermeldungen und Klassennamen abschrecken, 
+                        entdeckt man als Grund:
+                    </p>
+                    <pre><code>Caused by: java.lang.IllegalStateException: Ambiguous mapping found. Cannot map 'welcomeController' bean method 
+public java.lang.String de.unibielefeld.techfak.tdpe.jsp.WelcomeController.welcome(java.util.Map&lt;java.lang.String, java.lang.Object&gt;)
+to {[/],methods=[],params=[],headers=[],consumes=[],produces=[],custom=[]}: There is already 'blogController' bean method
+public java.lang.String de.unibielefeld.techfak.tdpe.jsp.BlogController.index(org.springframework.ui.Model) mapped.
+</code></pre>
+
+
+                    <p>
+                        Schaut man sich beiden angemerkten Methodendefinitionen genauer an, sieht man, 
+                        dass beide jeweils mit <code>@RequestMapping("/")</code> auf den 
+                        "/"-Pfad der Webanwendung reagieren sollen - Spring weiß also nicht, welche Methode es benutzen soll.
+                    </p>
+
+                    <p>
+                        Um den Fehler zu beheben, darf nur noch eine Methode auf "/" reagieren, 
+                        in diesem Fall soll das BlogController.index(Model model) sein.
+                        Den WelcomeController brauchen wir dagegen gar nicht mehr 
+                        - er liefert eine Seite aus, die wir für den Blog nicht mehr brauchen - 
+                        wir können ihn also löschen.
+                    </p>
+
+                    <p>
+                        Starten wir die Anwendung nun erneut mit <code class="bash">mvn spring-boot:run</code>, startete Spring ohne Probleme.
+                        Unter <a target="_blank" href="http://localhost:8080">http://localhost:8080</a> kann man nun den in BlogController erstellten BlogPost sehen.
+                    </p>
+
+                    <div class="row">
+                        <div class="col-sm-6 col-sm-offset-3">
+                            <img src="img/schritt_6.png" alt="Schritt_6" class="center-block img-responsive"/> 
+                        </div>
+                    </div>
+
+                </div>
+                <hr>
+            </div>
+
+            <!--Schritt 7 - Services-->
+            <div>
+                <div class="well">
+                    <h2>Schritt 7 - Services erstellen und anbinden</h2>
+
+                    <p>
+                        Damit BlogPosts nicht mehr im Controller direkt erstellt werden müssen, 
+                        muss ein Service erstellt werden, welcher diese liefert.
+                        In Spring sind Services eine Gruppe von Objekten, welche innerhalb der Anwendung Daten und Funktionen jeglicher Form bereitstellen, 
+                        z.B. das Laden von Daten aus einer Datenbank.
+                    </p>
+
+                    <p class="h3">Interface</p>
+
+                    <p>
+                        Um einen Service zum Liefern der BlogPosts zu erstellen, wird als erstes 
+                        im Package de.unibielefeld.techfak.tdpe.jsp.domain das Interface BlogService erstellt:
+                    </p>
+
+                    <pre><code class="java">import java.util.List;
+
+public interface BlogService {
+    List&lt;BlogPost&gt; getAllPosts();
+}</code></pre>
+
+                    <p>
+                        Dieses stellt uns eine Methode bereit, die alle BlogPosts zurückgibt.
+                    </p>
+
+                    <hr>
+
+                    <p class="h3">Implementation</p>
+
+                    <p>
+                        Für dieses Interface brauchen wir zusätzlich auch eine Implementation.
+                        Dazu wird wieder im Package de.unibielefeld.techfak.tdpe.jsp.domain die Klasse BlogServiceStub erstellt:
+                    </p>
+                    <pre><code class="java">import java.util.LinkedList;
+import java.util.List;
+import org.springframework.stereotype.Service;
+
+@Service
+public class BlogServiceStub implements BlogService {
+
+    @Override
+    public List&lt;BlogPost&gt; getAllPosts() {
+        List&lt;BlogPost&gt; blogPosts = new LinkedList<>();
+        
+        blogPosts.add(new BlogPost("1", "erster BlogPost", "Mein erster Blogpost."));
+        blogPosts.add(new BlogPost("2", "zweiter BlogPost", "Mein zweiter Blogpost."));
+        
+        return blogPosts;
+    }
+}
+</code></pre>
+
+                    <p>
+                        Diese Klasse ist mit @Service annotiert. 
+                        Dies bedeutet, dass Spring beim Programmstart eine Instanz der Klasse erstellen und global verfügbar machen soll. 
+                        Andere Klassen können dann mit Hilfe der @Autowired-Annotation darum bitten, 
+                        eine Instanz von BlogService in einem privaten Feld oder als Konstruktorparameter zu bekommen, 
+                        und werden von Spring mit BlogServiceStub bekannt gemacht.
+                    </p>
+
+                    <p>
+                        Dieses Konzept nennt sich Dependency Injection und erlaubt es uns, 
+                        unsere Services und Controller zu schreiben, ohne uns selbst groß darum kümmern zu müssen, in 
+                        welcher Reihenfolge die Klassen an welcher Stelle instanziert werden müssen 
+                        und wie sie voneinander abhängen.
+                    </p>
+
+                    <p>
+                        In der Methode getAllPosts() erstellen wir wieder direkt 2 BlogPosts, wie auch schon im BlogController, 
+                        damit wir uns erstmal nicht datum kümmern müssen, wo die BlogPosts letztendlich herkommen.
+                    </p>
+
+
+                    <hr>
+
+                    <p class="h3">Controller anpassen</p>
+
+                    <p>
+                        Von der @Service-Annotation des BlogServiceStubs machen wir nun im BlogController Gebrauch:
+                    </p>
+
+                    <pre><code class="java">import de.unibielefeld.techfak.tdpe.jsp.domain.BlogPost;
+import de.unibielefeld.techfak.tdpe.jsp.domain.BlogService;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+public class BlogController {
+    private final BlogService blogService;
+
+    @Autowired
+    public BlogController(BlogService blogService) {
+        this.blogService = blogService;
+    }
+        
+    @RequestMapping("/")
+    public String index(Model model) {
+        model.addAttribute("blogPosts", this.getBlogPosts());
+        return "index";
+    }
+
+    private List&lt;BlogPost&gt; getBlogPosts() {
+        return blogService.getAllPosts();
+    }
+}</code></pre>
+
+                    <p>
+                        <code>BlogService blogService</code> ist der BlogService, welcher die BlogPosts liefern soll.
+                        Dieses wird über den Konstruktor gesetzt, welcher mit @Autowired annotiert ist.
+                        Durch diese Annotation erkennt Spring, das es ein passendes Objekt bereitstellen soll. 
+                        Dieses Objekt ist jeweils eine Instanz einer mit @Service annotierten Klasse, wenn eine Instanz
+                        des Interfaces BlogService gebraucht wird, ist dies also die Klasse BlogServiceStub, 
+                        welche dieses Interface implementiert und mit @Service annotiert ist.
+                    </p>
+
+                    <p>
+                        Zusätzlich ändern wir die Methode <code>getBlogPosts()</code>, sodass diese nicht mehr selbst BlogPosts erstellt, 
+                        sondern diese über den <code>blogService</code> lädt.
+                    </p>
+
+
+                    <hr>
+
+                    <p class="h3">Ausprobieren</p>
+
+                    <p>
+                        Die Anwendung kann nun wieder über <code class="bash">mvn spring-boot:run</code> gestartet 
+                        und unter <a target="_blank" href="http://localhost:8080">http://localhost:8080</a> erreicht werden.
+                    </p>
+
+                    <div class="row">
+                        <div class="col-sm-6 col-sm-offset-3">
+                            <img src="img/schritt_7.png" alt="Schritt_7" class="center-block img-responsive"/> 
+                        </div>
+                    </div>
+
+                </div>
+                <hr>
+            </div>
+
+            <!--Schritt 8 - DB-->
+            <div>
+                <div class="well">
+                    <h2>Schritt 8 - Datenbank erstellen</h2>
+
+                    <p>
+                        Damit die BlogPosts nicht mehr im Code erstellt werden müssen, sollen diese aus einer Datenbank geladen werden. 
+                        Für den Datenbankzugriff wird dabei Spring Data verwendet.
+                    </p>
+
+                    <p class="h3">Neue Abhängigkeiten</p>
+
+                    <p>
+                        Zunächst müssen wir die Bibliotheken, die wir verwenden wollen in die pom.xml unseres Projektes eintragen.
+                        Wir
+                        benötigen zwei Sachen: Einerseits spring-boot-starter-data-jpa, was die nötigen
+                        APIs und ein wenig Standardkonfiguration für den Datenbankzugriff liefert, und andererseits einen geeigneten
+                        JDBC-Treiber. Dafür werden wir H2, eine in-memory-Datenbank verwenden. Dies hat den Vorteil, keinerlei
+                        Administration oder Installation zu benötigen. Dafür wird allerdings bei jedem Programmstart die Datenbank
+                        gelöscht. Um dieses kleinere Problem kümmern wir uns aber erst später.
+                    </p>
+
+                    <p>Füge in deine pom.xml folgende Zeilen direkt oberhalb von &lt;/dependencies&gt; ein:</p>
+                    <pre><code class="xml">&lt;dependency&gt;
+    &lt;groupId>org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId>spring-boot-starter-data-jpa&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId>com.h2database&lt;/groupId&gt;
+    &lt;artifactId>h2&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+
+                    <p>
+                        spring-boot-starter-data-jpa wird nun, wenn es der Ansicht ist dass wir eine Datenbank brauchen, im Classpath
+                        der
+                        Anwendung nach einem verwendbaren JDBC-Treiber suchen, den von H2 finden, und darauf basierend
+                        eine Standardkonfiguration verwenden.
+                    </p>
+
+                    <hr>
+                    <p class="h3">Konfiguration</p>
+
+                    <p>
+                        Um auf die Datenbank zugreifen zu können, brauchen wir noch etwas Magie von Spring, die wir erstmal explizit
+                        erbitten müssen. Dazu füge bei den Annotationen oberhalb der SampleWebJspApplication-Klasse noch folgendes
+                        ein:
+                    </p>
+
+                    <pre>
+<code class="java">@EnableJpaRepositories
+@EnableTransactionManagement
+</code></pre>
+                    <p>
+                        Die erste Annotation bringt Spring dazu, beim Programmstart nach bestimmten Interfaces in unserer Applikation
+                        zu
+                        suchen und automatisch Implementationen davon zu erzeugen.
+                        <br/>
+                        Die zweite Annotation ist gerade erstmal nicht zwingend notwendig, tut aber auch nicht weh. Sie führt dazu,
+                        dass
+                        wir Methoden, die mehrere Datenbankzugriffe in einer Transaktion zusammenfassen, einfach mit
+                        @Transactional annotieren
+                        können, damit Spring sich um das Transaktionsmanagement kümmert.
+                    </p>
+
+                    <hr>
+
+                    <p class="h3">Erstellen des Persistenzmodells</p>
+
+                    <p>
+                        Wir werden in dieser Anwendung das Persistenzmodell (wie unsere Daten in der Datenbank aussehen) und das
+                        Domänenmodell (wie die Daten in der Geschäftslogik modelliert sind) strikt trennen. Das ist in einer so
+                        einfachen Anwendung zwar nicht absolut zwingend notwendig, aber in der Regel gute Praxis. 
+                        Eine genauere Begründung findet Ihr zum Beispiel in 
+                        <a target="_blank" href="http://www.mehdi-khalili.com/orm-anti-patterns-part-4-persistence-domain-model">diesem Blogeintrag.</a>
+                    </p>
+
+                    <p>
+                        Im Package de.unibielefeld.techfak.tdpe.jsp.persistence wird dazu die neue Klasse BlogPostEntity
+                        erstellt: <!-- Auch hier: Package muss erst erstellt werden! -->
+                    </p>
+                    <pre><code class="java">import javax.persistence.*;
+
+@Entity(name = "blog_posts")
+public class BlogPostEntity {
+    @Id
+    @GeneratedValue
+    @Column(name = "id")
+    private Integer id;
+
+    @Column(name = "title")
+    private String title;
+
+    @Lob
+    @Column(name = "text")
+    private String text;
+
+    public BlogPostEntity() {
+    }
+
+    public BlogPostEntity(String title, String text) {
+        this.title = title;
+        this.text = text;
+    }
+
+    //... hier bitte Getter und Setter für alle Felder einfügen!
+}
+</code></pre>
+                    <p>
+                        Hiermit wird definiert, dass es eine Tabelle mit dem Namen "blog_posts" geben soll, die die Felder "id",
+                        "title" und "text" hat und deren Zeilen sich als Objekte der Klasse BlogPostEntity darstellen lassen.
+                        <br/>
+                        Die Annotation @Id zeigt an, dass jede Tabellenzeile durch die Spalte 'id' eindeutig identifizert weden
+                        kann.
+                        Mit @GeneratedValue bitten wir darum, Ids automatisch zuzuweisen damit wir uns nicht darum kümmern müssen.
+                        Die
+                        Datenbank wird hierzu fortlaufende Nummern vergeben.
+                        <br/>
+                        Die @Column-Annotationen dienen hier vor allem dazu, sicherzustellen dass alle Spalten genau den
+                        gewünschten Namen haben. Ohne Angabe eines extra namen wird anhand des Feld-Namens ein Spaltenname generiert.
+                        <br/>
+                        Mit @Lob wird gefordert, dass der Text eines Blogeintrags ein "Large Object" ist.
+                        Normalerweise würden Strings durch VARCHAR-Felder dargestellt, die in der Regel nur kurze Strings zulassen (z.B. bis zu 255 Zeichen).
+                        Eine @Lob-Spalte würde statt dessen als TEXT, LONGTEXT oder etwas ähnlichem dargestellt, was auch lange Texte zulässt.
+                    </p>
+
+                    <hr>
+
+
+                    <p class="h3">Erstellen des Repositories</p>
+
+                    <p>
+                        Um Blogeinträge aus der Datenbank zu laden oder zu speichern wird außerdem ein Repository benötigt.
+                        Dabei handelt es sich einfach nur um ein Interface das von CrudRepository erbt und beschreibt, was für Objekte mit
+                        was für Ids in der Datenbank liegen, und nach welchen Kriterien man diese anfragen kann.<br/>
+                        Dazu wird im Package de.unibielefeld.techfak.tdpe.jsp.persistence ein neues Interface BlogPostRepository mit
+                        folgendem Inhalt erstellt:
+                    </p>
+                    <pre>
+<code class="java">import org.springframework.data.repository.CrudRepository;
+
+public interface BlogPostRepository extends CrudRepository&lt;BlogPostEntity, Integer&gt;{
+}
+</code></pre>
+                    <p>
+                        Jep. Das war alles. Werden keine besonderen Anfragen benötigt, kann man sich mit dem zufrieden geben, was von CrudRepository geerbt wird.
+                        Dies sind Methoden zum Erstellen (<b>C</b>reate), Lesen (<b>R</b>ead), Updaten (<b>U</b>pdate) und Löschen (<b>D</b>elete) von Datensätzen.
+                        <br>
+                        Die Generic-Argumente von CrudRepository erklären Spring, dass
+                        wir damit auf BlogPostEntities zugreifen möchten, und dass wir als Ids dabei Integer verwenden. <br/>
+                        Eine Implementation von BlogPostRepository brauchen wir nicht zu erstellen - die wird zur Laufzeit von
+                        Spring generiert.
+                    </p>
+
+                    <hr>
+
+                    <h3>Beispieldaten</h3>
+
+                    <p>Damit beim Testen auch Daten vorhanden sind, wäre es schön wenn die Anwendung beim Start die Datenbank erstmal mit
+                        ein paar Beispiel-Blogeinträgen befüllt wird.<br/>
+                        Dazu wird eine Datei "import.sql" im Verzeichnis src/main/resources 
+                        (In Netbeans unter "Other Sources" zu finden -- wo bereits die application.properties drin liegt), erstellt:
+                    </p>
+                    <pre>
+<code class="sql">INSERT INTO blog_posts (id, title, text) VALUES (1, 'mein erster eintrag', 'lorem ipsum dolor sit amet...');
+INSERT INTO blog_posts (id, title, text) VALUES (2, 'mein zweiter eintrag', 'Wants pawn term, dare worsted ladle gull hoe lift wetter murder inner ladle cordage, honor itch offer lodge dock florist. ');
+</code></pre>
+
+                    <hr>
+
+                    <p class="h3">Ausprobieren</p>
+
+                    <p>
+                        Die Anwendung kann nun wieder über <code class="bash">mvn spring-boot:run</code> gestartet werden.
+                        Auf der Website wird man noch keine Änderungen sehen, jedoch sieht man in den Logs, dass die Datenbank erstellt wurde:
+                    </p>
+                    <pre><code class="bash">INFO 12182 --- [lication.main()] org.hibernate.Version                    : HHH000412: Hibernate Core {4.3.1.Final}
+INFO 12182 --- [lication.main()] org.hibernate.cfg.Environment            : HHH000206: hibernate.properties not found
+INFO 12182 --- [lication.main()] org.hibernate.cfg.Environment            : HHH000021: Bytecode provider name : javassist
+INFO 12182 --- [lication.main()] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {4.0.4.Final}
+INFO 12182 --- [lication.main()] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.H2Dialect
+INFO 12182 --- [lication.main()] o.h.h.i.ast.ASTQueryTranslatorFactory    : HHH000397: Using ASTQueryTranslatorFactory
+INFO 12182 --- [lication.main()] org.hibernate.tool.hbm2ddl.SchemaExport  : HHH000227: Running hbm2ddl schema export
+Hibernate: drop table blog_posts if exists
+Hibernate: create table blog_posts (id integer generated by default as identity, text clob, title varchar(255), primary key (id))
+INFO 12182 --- [lication.main()] org.hibernate.tool.hbm2ddl.SchemaExport  : HHH000230: Schema export complete
+</code></pre>
+
+
+                </div>
+                <hr>
+            </div>
+
+            <!--Schritt 9 - DB anbinden-->
+            <div>
+                <div class="well">
+                    <h2>Schritt 9 - Datenbank anbinden</h2>
+
+                    <p>
+                        Es gibt nun zwar eine Datenbank - die auch schon Einträge enthält - allerdings wird diese noch nicht von der Anwendung benutzt.
+                    </p>
+
+                    <p>
+                        Um Daten über das Repository aus der Datenbank zu laden, wird wieder ein Service benötigt.
+                        <br>
+                        Dazu wird im Package de.unibielefeld.techfak.tdpe.jsp.domain die Klasse BlogServiceImpl, 
+                        die das Interface BlogService implementiert, erstellt:
+                    </p>
+
+                    <pre><code class="java">import de.unibielefeld.techfak.tdpe.jsp.persistence.BlogPostEntity;
+import de.unibielefeld.techfak.tdpe.jsp.persistence.BlogPostRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.LinkedList;
+import java.util.List;
+
+@Service
+public class BlogServiceImpl implements BlogService {
+    private final BlogPostRepository blogPostRepository;
+
+    @Autowired
+    public BlogServiceImpl(BlogPostRepository blogPostRepository) {
+        this.blogPostRepository = blogPostRepository;
+    }
+
+    @Override
+    public List&lt;BlogPost&gt; getAllPosts() {
+        List&lt;BlogPost&gt; result = new LinkedList&lt;BlogPost&gt;();
+        for (BlogPostEntity blogPostEntity: blogPostRepository.findAll()) {
+            result.add(new BlogPost(
+                blogPostEntity.getId().toString(),
+                blogPostEntity.getTitle(),
+                blogPostEntity.getText()
+            ));
+        }
+        return result;
+    }
+}</code></pre>
+
+                    <p>
+                        BlogServiceImpl ist wieder mit @Service annotiert, damit man diese Klasse wieder von Spring 
+                        erkannt wird und mit @Autowired verfügbar ist.
+                        <br>
+                        Außerdem ist der Konstruktor mit @Autowired annotiert, damit Spring angwiesen wird, 
+                        eine Instanz von BlogPostRepository bereitzustellen.
+                        <br>
+                        In <code>getAllPosts()</code> werden dann alle BlogPostEntitys über das Repository aus der Datenbank geladen, 
+                        eine Liste von BlogPosts erstellt, und diese zurückgegeben.
+                    </p>
+
+                    <hr>
+
+                    <p class="h3">Ausprobieren</p>
+
+                    <p>
+                        Die Anwendung kann nun wieder über <code>mvn spring-boot:run</code> gestartet werden.
+                        <br>
+                        Spring bricht den Start der Anwendung jedoch wieder mit einer Fehlermeldung ab:
+                    </p>
+
+                    <!-- auch hier: Darauf hinweisen, dass der SS gekürzt ist! -->
+                    <pre><code class="bash">java.lang.reflect.InvocationTargetException
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:483)
+	at org.springframework.boot.maven.RunMojo$LaunchRunner.run(RunMojo.java:300)
+	at java.lang.Thread.run(Thread.java:745)
+Caused by: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'blogController' defined in file [/.../blog/target/classes/de/unibielefeld/techfak/tdpe/jsp/BlogController.class]: Unsatisfied dependency expressed through constructor argument with index 0 of type [de.unibielefeld.techfak.tdpe.jsp.domain.BlogService]: : No qualifying bean of type [de.unibielefeld.techfak.tdpe.jsp.domain.BlogService] is defined: expected single matching bean but found 2: blogServiceImpl,blogServiceStub; nested exception is org.springframework.beans.factory.NoUniqueBeanDefinitionException: No qualifying bean of type [de.unibielefeld.techfak.tdpe.jsp.domain.BlogService] is defined: expected single matching bean but found 2: blogServiceImpl,blogServiceStub
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:747)
+	at org.springframework.beans.factory.support.ConstructorResolver.autowireConstructor(ConstructorResolver.java:185)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.autowireConstructor(AbstractAutowireCapableBeanFactory.java:1114)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1017)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:504)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:475)
+	at org.springframework.beans.factory.support.AbstractBeanFactory$1.getObject(AbstractBeanFactory.java:304)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:228)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:300)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:195)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:703)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:760)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:482)
+	at org.springframework.boot.context.embedded.EmbeddedWebApplicationContext.refresh(EmbeddedWebApplicationContext.java:120)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:648)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:311)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:909)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:898)
+	at de.unibielefeld.techfak.tdpe.jsp.SampleWebJspApplication.main(SampleWebJspApplication.java:37)
+	... 6 more
+Caused by: org.springframework.beans.factory.NoUniqueBeanDefinitionException: No qualifying bean of type [de.unibielefeld.techfak.tdpe.jsp.domain.BlogService] is defined: expected single matching bean but found 2: blogServiceImpl,blogServiceStub
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.doResolveDependency(DefaultListableBeanFactory.java:970)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.resolveDependency(DefaultListableBeanFactory.java:858)
+	at org.springframework.beans.factory.support.ConstructorResolver.resolveAutowiredArgument(ConstructorResolver.java:811)
+	at org.springframework.beans.factory.support.ConstructorResolver.createArgumentArray(ConstructorResolver.java:739)
+	... 24 more             
+</code></pre>
+
+                    <p>
+                        Der Grund für den Fehler lässt sich wieder am unteren Ende des StackTraces finden:
+                    </p>
+
+                    <pre><code class="bash">Caused by: org.springframework.beans.factory.NoUniqueBeanDefinitionException: No qualifying bean of type [de.unibielefeld.techfak.tdpe.jsp.domain.BlogService] is defined: expected single matching bean but found 2: blogServiceImpl,blogServiceStub
+</code></pre>
+
+                    <p>
+                        Innerhalb des Projektes sind zwei Klassen, die BlogService implementieren, mit <span class="code-java">@Service</span> annotiert. 
+                        Wird nun mit <span class="code-java">@Autowired</span> eine Instanz von BlogService angefordert, weiß Spring nicht, welche der beiden Klassen genutzt werden soll.
+                    </p>
+
+                    <p>
+                        Um den Fehler zu beheben gibt es drei Möglichkeiten:
+                    </p>
+                    <ul>
+
+                        <li>Im BlogController keine Instanz von <code>BlogService</code> anfordern, sondern direkt von 
+                            <code>BlogServiceImpl</code>-  
+                            Dies ist jedoch sehr unschön, da man sich auf feste Implementationen festlegt und
+                            späterer Änderungen und Erweiterungen unnötig kompliziert macht
+                        </li>
+                        <li>
+                            Die <span class="code-java">@Service</span>-Annotation von <code>BlogServiceStub</code> entfernen - 
+                            Die Klasse wird dann von Spring nicht mehr als Service erkannt, 
+                            so kann man jedoch ggf. leicht wieder zur alten Implemenation wechseln.
+                        </li>
+                        <li>
+                            Die Klasse <code>BlogServiceStub</code> löschen - durch Verwendung von git o.ä. kann man, sollte es nötig 
+                            sein, die Klasse später wieder herstellen
+                        </li>
+                        <li>
+                            Eine der beiden Services mit <span class="code-java">@Primary</span> annotieren, diese wird 
+                            dann bei <span class="code-java">@Autowired</span> bevorzugt
+                         </li>
+                    
+                    
+                    </ul>
+
+                    <p>
+                        Da BlogServiceStub nicht mehr gebraucht wird, wird es innerhalb dieses Projekts gelöscht.
+                    </p>
+
+
+                    <hr>
+
+                    <p class="h3">Ausprobieren</p>
+
+                    <p>
+                        Die Anwendung kann nun wieder über <code class="bash">mvn spring-boot:run</code> gestartet 
+                        und unter <a target="_blank" href="http://localhost:8080">http://localhost:8080</a> erreicht werden.
+                    </p>
+
+                    <p>
+                        Auf der Website sieht man nun die aus der Datenbank geladenen Einträge:
+                    </p>
+
+                    <div class="row">
+                        <div class="col-sm-6 col-sm-offset-3">
+                            <img src="img/schritt_9.png" alt="Schritt_9" class="center-block img-responsive"/> 
+                        </div>
+                    </div>
+
+                </div>
+                <hr>
+            </div>
+
+            <!--Schritt 10 - Einträge hinzufügen-->
+            <div>
+                <div class="well">
+                    <h2>Schritt 10 - BlogPosts hinzufügen</h2>
+
+                    <p>
+                        Bisher können nur schon bei Programmstart in der Datenbank hinterlegte BlogPosts angezeigt werden, 
+                        es sollen jedoch auch neue einträge hinzugefügt werden können.
+                    </p>
+
+                    <p class="h3">Service anpassen</p>
+
+                    <p>
+                        Als Erstes wird dazu BlogService um die Methode 
+                        <code>BlogPost createBlogPost(BlogPost blogPost)</code> 
+                        erweitert und diese in BlogServiceImpl implementiert:
+                    </p>
+
+                    <!-- Klassennamen im Text deutlicher hervorheben! -->
+                    <pre><code class="java">@Override
+public BlogPost createBlogPost(BlogPost blogPost) {
+    BlogPostEntity blogPostEntity = new BlogPostEntity(blogPost.getTitle(), blogPost.getText());
+    BlogPostEntity savedEntity = blogPostRepository.save(blogPostEntity);
+    
+    BlogPost saved = new BlogPost(savedEntity.getId().toString(),savedEntity.getTitle(),savedEntity.getText());
+    
+    return saved;
+}
+</code></pre>
+
+                    <p>
+                        Diese Methode erzeugt mit den Daten aus dem übergebenen BlogPost die entsprechende BlogPostEntity und speichert diese ab.
+                        <br>
+                        Aus der zurückgegebenen <code>BlogPostEntity savedEntity</code> wird dann wieder ein BlogPost erstellt, welcher zurückgegeben wird.
+                    </p>
+
+
+                    <hr>
+
+                    <p class="h3">Controller anpassen</p>
+
+
+                    <p>
+                        Der Controller braucht nun zwei neue Methoden - eine um das Formular zum Bearbeiten eines Blogeintrags anzuzeigen, und eine um den neuen Eintrag tatsächlich zu speichern.
+                        <br>
+                        Dazu wird der BlogController um folgende Methoden erweitert:
+                    </p>
+
+                    <pre><code class="java">    @RequestMapping(value = "/new", method = RequestMethod.GET)
+    public String showNewPostForm() {
+        return "newPostForm";
+    }
+
+    @RequestMapping(value = "/new", method = RequestMethod.POST)
+    public String saveNewPost(@RequestParam String title,
+                              @RequestParam String text) {
+        BlogPost blogPost = new BlogPost(null, title, text);
+        blogService.createBlogPost(blogPost);
+        return "redirect:/";
+    }
+</code></pre>
+
+                    <p>
+                        Die erste Methode tut selber nichts, sondern zeigt einfach nur die View "newPostForm" an. 
+                        <br>
+                        Die zweite Methode erhält zwei Parameter, jeweils als @RequestParam. Das heißt dass die 
+                        Belegung der Parameter aus den im HTTP-Request übertragenen Formulardaten zu beziehen ist.
+                        <br>
+                        Dem aufmerksamen Beobachter mag aufgefallen sein, dass beide Methoden auf Anfragen auf dem 
+                        Pfad "/new" reagieren. Das RequestMapping unterscheidet sich nur darin, was als method angegeben ist. 
+                        HTTP erlaubt es, beim Zugriff auf eine Seite anzugeben was für eine Art von Zugriff erwünscht ist. 
+                        Dies wird im allgemeinen als "method" bezeichnet. Standardmäßig verwendet der Webbrowser immer GET. 
+                        Ruft man also einfach nur die URL "/new" auf, wird die methode GET verwendet und showNewPostForm() wird aufgerufen. 
+                        In unserem Formular werden wir den Browser anweisen, zum Abspeichern des Blogeintrags statt dessen 
+                        POST zu verwenden - dann würde saveNewPost() aufgerufen. 
+                        Der HTTP-Standard sieht noch einige weitere Methoden vor, wie z.B. DELETE und PUT, aber die sind für 
+                        uns gerade nicht allzu spannend. Solltet Ihr in die Situation kommen, Schnittstellen für AJAX-lastige 
+                        Webanwendungen schreiben zu müssen, solltet Ihr euch mit den verschiendenen HTTP-Methoden und ihrer 
+                        Bedeutung aber auseinander setzen. 
+                        Der von saveNewPost() zurückgelieferte Viewname beginnt mit "redirect:", um anzudeuten dass wir selber 
+                        keine view rendern wollen, sondern der Browser nach Abschluß dieses Requests direkt eine andere URL 
+                        aufrufen soll. Die aufzurufende URL ergibt sich aus dem Text hinter dem Doppelpunkt. In diesem Fall 
+                        soll also die Startseite (entsprechend der index()-Methode des Controllers) aufgerufen werden.
+                    </p>
+
+
+                    <hr>
+
+
+                    <p class="h3">View anpassen</p>
+
+
+                    <p>
+                        Um das Formular anzuzeigen, wird noch eine View benötigt.
+                        <br>
+                        Dazu wird src/main/java/webapp/WEB-INF/jsp/newPostForm.jsp erstellt:
+                    </p>
+
+
+                    <pre><code class="html">&lt;!DOCTYPE html&gt;
+
+&lt;%@ taglib prefix=&quot;spring&quot; uri=&quot;http://www.springframework.org/tags&quot;%&gt;
+&lt;%@ taglib prefix=&quot;c&quot; uri=&quot;http://java.sun.com/jsp/jstl/core&quot;%&gt;
+&lt;%@ taglib prefix=&quot;form&quot; uri=&quot;http://www.springframework.org/tags/form&quot; %&gt;
+
+&lt;html lang=&quot;en&quot;&gt;
+    &lt;head&gt;
+        &lt;meta charset=&quot;utf-8&quot;&gt;
+    &lt;/head&gt;
+
+    &lt;body&gt;
+        &lt;form:form method=&quot;POST&quot; &gt;
+            &lt;label for=&quot;title&quot;&gt;Titel:&lt;/label&gt;
+            &lt;input id=&quot;title&quot; name=&quot;title&quot; placeholder=&quot;Titel&quot; /&gt;
+            &lt;label for=&quot;text&quot;&gt;Text:&lt;/label&gt;
+            &lt;textarea id=&quot;text&quot; name=&quot;text&quot; placeholder=&quot;Text&quot;&gt;&lt;/textarea&gt;
+            &lt;button &gt;Speichern&lt;/button&gt;
+        &lt;/form:form&gt;
+    &lt;/body&gt;
+
+&lt;/html&gt;
+</code></pre>
+
+                    <p>
+                        Außerdem wird in der index.jsp noch ein Link auf die neue Seite benötigt, 
+                        dazu wird die index.jsp unter &lt;h1&gt;BlogPosts&lt;/h1&gt; ergänzt um:
+                    </p>
+
+
+                    <pre><code class="html">&lt;a href=&quot;&lt;spring:url value=&quot;/new&quot; /&gt;&quot;&gt;Neuer Eintrag&lt;/a&gt;
+</code></pre>
+
+
+
+
+
+                </div>
+                <hr>
+            </div>
+
+            <!--Schritt 11 - Login-->
+            <div>
+                <div class="well">
+                    <h2>Schritt 11 - Login und Authentifizierung</h2>
+
+                    <p>
+                        Bisher ist es für jeden möglich, neue BlogPosts zu erstellen. Besser wäre es jedoch, 
+                        wenn jeder Posts lesen kann, aber nur angemeldete Nutzer neue Posts erstellen können.
+                    </p>
+
+                    <hr>
+
+                    <p class="h3">
+                        Abhängigkeiten
+                    </p>
+
+                    <p>
+                        Spring liefert bereits ein recht umfassendes Framework um Login, Sessionverwaltung, 
+                        und so weiter umzusetzen: Spring Security. 
+                        <br>
+                        Wie bereits bei der Datenbankanbindung muss man nur in der pom.xml die passende Abhängigkeit angeben -
+                        in diesem Fall spring-boot-starter-security.
+                    </p>
+
+                    <pre><code class="xml">&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-security&lt;/artifactId&gt;
+&lt;/dependency&gt;
+</code></pre>
+
+                    <hr/>
+
+                    <p class="h3">
+                        Konfiguration
+                    </p>
+
+                    <p>
+                        Damit Spring die Benutzerverwaltung passend konfiguriert, braucht man eine Klasse, die die Konfiguration bereitstellt.
+                        <br>
+                        Dazu wird im Package <code>de.unibielefeld.techfak.tdpe.jsp.config</code> die Klasse <code>SecurityConfig</code> erstellt:
+                        <!-- Package muss erstellt werden! -->
+                    </p>
+
+                    <!-- Problem: Authority <> Role -->
+                    <!-- SecurityContextHolder.getSecurityContext().getAuthentication().getPrincipal() -->
+                    <pre>
+<code class="java">import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.servlet.configuration.EnableWebMvcSecurity;
+
+@Configuration
+@EnableWebMvcSecurity
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+            .authorizeRequests()
+            .antMatchers(&quot;/&quot;).permitAll()
+            .anyRequest().hasAuthority("USER")
+            .and()
+            .formLogin()
+            .permitAll()
+            .and()
+            .logout()
+            .permitAll()
+        ;
+    }
+
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        auth
+            .inMemoryAuthentication()
+            .withUser(&quot;user&quot;).password(&quot;password&quot;).roles(&quot;USER&quot;);
+        
+    }
+}
+</code></pre>
+
+                    <p>
+                        Die configure()-Methode gibt an, dass:
+                    </p>
+                    <ul>
+                        <li>
+                            Anfragen auf "/" sollen immer erlaubt sein
+                        </li>
+                        <li>
+                            Alle anderen Anfragen nur für Nutzer mit der Rolle "USER"
+                        </li>
+                        <li>
+                            Ein fertiges Login-Formular von Spring verwendet werden soll und jeder Benutzer Zugriff auf das Formular bekommen soll
+                        </li>
+                        <li>
+                            <!-- Was bedeutet "POST"? --> Es möglich sein soll, durch einen POST-Request auf /logout sich auszuloggen, und auch das für jeden Benutzer möglich sein soll
+                        </li>
+                    </ul>
+                    <p>
+                        In der configureGlobal()-Methode legen wir außerdem fest, dass wir eine feste, im Programm vorgegebene Benutzerliste 
+                        haben möchten, nämlich mit den Benutzernamen "user" und dem Passwort "password".
+                        <br/>
+                        Spring Security erlaubt es, Benutzern unterschiedliche Rollen zuzuweisen, 
+                        um z.B. zwischen Benutzern und Administratoren zu unterscheiden. 
+                        Wir verwenden in dieser Anwendung nur eine Rolle und nennen sie "USER".
+                    </p>
+                    <hr/>
+
+                    <p class="h3">Ausprobieren</p>
+                    <p>
+                        Wenn Du die Anwendung nun neu startest, solltest Du beim Klick auf den "Neuer Eintrag"-Link zunächst 
+                        im Loginformular landen. Meldest Du dich mit dem Benutzernamen "user" und dem Passwort "password" an, 
+                        kannst Du danach wie vorher auch deinen Blogeintrag erstellen.
+                    </p>
+
+
+                    <hr/>
+
+                    <p class="h3">Logout</p>
+                    <p>
+                        Bisher gibt es für Nutzer keine Möglichkeit, sich wieder auszuloggen.
+                        <br/>
+                        Wie oben erklärt ist für einen Logout jedoch nur ein POST-Request an "/logout" nötig.
+                        <br/>
+                        Um dies zu ermöglichen, wird die <code>newPostForm.jsp</code> unterhalb des <code>&lt;/form:form&gt;</code>um folgendes erweitert:
+                    </p>
+
+                    <pre><code>&lt;spring:url value="/logout" var="logoutUrl"/&gt;
+&lt;form:form action="${logoutUrl}" method="POST"&gt;
+    &lt;button&gt;Logout&lt;/button&gt;
+&lt;/form:form&gt;
+</code></pre>
+
+
+                </div>
+                <hr>
+            </div>
+
+            <!--Schritt 12 - Benutzerverwaltung in der Datenbank-->
+            <div>
+                <div class="well">
+                    <h2>Schritt 12 - Benutzerverwaltung in der Datenbank</h2>
+
+                    <p>
+                        Die Nutzer sind bisher fest in  <code>SecurityConfig</code> eingetragen, 
+                        es lassen sich also keine Nutzer hinzufügen, löschen oder überhaupt bearbeiten.
+                        <br>
+                        Für einen wirklichen Blog ist es natürlich nötig, das die Nutzer aus ener Datenbank oder ähnlichem geladen werden.
+                    </p>
+
+                    <hr>
+
+                    <p class="h3">
+                        Domänenmodell
+                    </p>
+
+                    <p>
+                        Spring Security möchte, dass die Klassen die einen Benutzer darstellen ein bestimmtes 
+                        Interface implementieren - UserDetails. Der einfachste Weg dazu ist, von einer von 
+                        Spring Security bereitgestellten Klasse <code>User</code> zu erben. 
+                        <br/>
+                        Dazu wird im package <code>de.unibielefeld.techfak.tdpe.jsp.domain</code> die neue Klasse <code>User</code> erstellt:
+                    </p>
+
+                    <pre>
+<code class="java">import java.util.Arrays;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+public class User extends org.springframework.security.core.userdetails.User {
+
+    private final String firstName;
+    private final String lastName;
+
+    public User(String username, String firstName, String lastName, String password, String role) {
+        super(username, password, Arrays.asList(new SimpleGrantedAuthority(role)));
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getFullName() {
+        return firstName + " " + lastName;
+    }
+
+    @Override
+    public String toString() {
+        return "User{"
+                + "super='" + super.toString() + "'"
+                + ", firstName='" + firstName + '\''
+                + ", lastName='" + lastName + '\''
+                + '}';
+    }
+}
+
+</code></pre>
+
+                    <p>
+                        Der Nutzer hat in diesem Fall immer genau eine Rolle, die dem Konstruktor übergebene 
+                        Rolle <code>role</code>. Diese zu übergeben ist nicht nötig - man könnte sie auch im Konstruktor 
+                        neu erstellen, da der Blog nur eine Art Nutzer kennt - es ermöglicht aber später leichtere 
+                        Anpassungen, wenn es verschiedene Rollen geben soll.
+                        Eine zusätliche Alternative, wenn ein Nutzer mehrere Rollen haben kann, wäre den Konstruktor ändern, 
+                        sodass er nicht eine einzelne Rolle, sondern eine Liste von Rollen entgegennimmt.
+                    </p>
+
+                    <hr/>
+
+                    <p class="h3">
+                        Persistenzmodell
+                    </p>
+
+                    <p>
+                        Damit die Nutzer aus der Datenbank geladen werden können, wird wieder ein Persistenzmodell benötigt.
+                        <br/>
+                        Dazu wird im package <code>de.unibielefeld.techfak.tdpe.jsp.persistence</code> die neue Klasse <code>UserEntity</code> erstellt:
+                    </p>
+
+                    <pre>
+<code class="java">import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity(name = "users")
+public class UserEntity {
+
+    @Id
+    @Column(name = "username")
+    private String username;
+
+    @Column(name = "password_hash")
+    private String passwordHash;
+
+    @Column(name = "first_name")
+    private String firstName;
+
+    @Column(name = "last_name")
+    private String lastName;
+    
+    @Column(name = "user_role")
+    private String userRole;
+
+    //Hier bitte getter und setter für alle Felder einfügen!
+}
+</code></pre>
+
+                    <p>
+                        Die Benutzer sollen anhand eines selbst gewählten Loginnamens eindeutig identifiziert werden, daher ist hier
+                        kein
+                        @GeneratedValue an der Id notwendig.
+                    </p>
+
+                    <p>
+                        Das Feld für das Passwort heißt "passwordHash", nicht einfach nur "password". Das hat einen guten
+                        Grund:
+                        <br/>
+                        Die Passwörter werden nicht im Plaintext in der Datenbank gespeichert, sondern es wird eine so genannte
+                        Hashfunktion auf das Passwort angewendet und das Ergebnis davon gespeichert. Dadurch kann selbst jemand, der Zugang zur
+                        Datenbank hat, die Passwörter der Benutzer nicht auslesen, man kann aber trotzdem noch prüfen, ob eine
+                        Eingabe gleich dem Passwort des Benutzers ist.
+                    </p>
+
+                    <p class="h3">
+                        Repository
+                    </p>
+
+                    <p>
+                        Um Nutzer aus der Datenbank zu laden, ist zusätzlich wieder ein Repository nötig.
+                        <br/>
+                        Dazu wird im package <code>de.unibielefeld.techfak.tdpe.jsp.persistence</code> das Interface <code>UserRepository</code> erstellt:
+                    </p>
+
+                    <pre>
+<code class="java">import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface UserRepository extends CrudRepository&lt;UserEntity, String&gt; {
+}
+</code></pre>
+
+
+                    <hr/>
+
+
+                    <p class="h3">
+                        UserDetailsService
+                    </p>
+
+                    <p>
+                        Damit Spring Security die Benutzer findet, muss ein UserDetailsService existieren.
+                        <br/>
+                        Dazu wird im package <code>de.unibielefeld.techfak.tdpe.jsp.domain</code> die neue Klasse 
+                        <code>BlogUserDetailsService</code> erstellt, welche das Interface 
+                        <code>UserDetailsService</code> implementiert: <!-- Klarstellen: UDS ist ein Spring-Interface! -->
+                    </p>
+
+
+                    <pre>
+<code class="java">import de.unibielefeld.techfak.tdpe.jsp.persistence.UserEntity;
+import de.unibielefeld.techfak.tdpe.jsp.persistence.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+@Service
+public class BlogUserDetailsService implements UserDetailsService {
+
+    private final UserRepository userRepository;
+
+    @Autowired
+    public BlogUserDetailsService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        UserEntity userEntity = userRepository.findOne(username);
+        if (userEntity == null) {
+            throw new UsernameNotFoundException("User name " + username + " not found.");
+        }
+        return new User(userEntity.getUsername(),
+                userEntity.getFirstName(),
+                userEntity.getLastName(),
+                userEntity.getPasswordHash(),
+                userEntity.getUserRole());
+    }
+}</code></pre>
+
+
+                    <hr/>
+
+
+                    <p class="h3">
+                        SecurityConfig
+                    </p>
+
+                    <p>
+
+                        SecurityConfig muss jetzt noch der UserDetailsService als Quelle für User mitgeteilt werden.
+                        <br/>
+                        Dazu wird die alte <code>configureGlobal()</code> in <code>SecurityConfig</code> durch folgende zwei Methoden ersetzt:
+                        <!-- Import für PasswordEncoder ausqualifizieren - Spring hat *zwei* Klassen mit dem Namen -->
+                    </p>
+
+                    <pre><code class="java">    @Autowired
+    public void configureGlobal(UserDetailsService userDetailsService,
+                                PasswordEncoder passwordEncoder,
+                                AuthenticationManagerBuilder auth) throws Exception {
+        auth
+            .userDetailsService(userDetailsService)
+            .passwordEncoder(passwordEncoder);
+    }
+
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+</code></pre>
+
+                    <p>
+                        Durch die @Autowired Annotation an configureGlobal weiß Spring, dass die Parameter mit woanders
+                        erzeugten
+                        Beans belegt werden müssen.
+                        <br/>
+                        In <code>configureGlobal()</code> wird dann einfach nur der AuthenticationManagerBuilder darüber informiert, dass es
+                        einen
+                        UserDetailsService (der eben imlementiert und mit der @Service Annotation bereitgestellt wurde)
+                        und einen PasswordEncoder verwenden soll. Letzterer kümmert sich darum, die vor einiger Zeit erwähnte
+                        Hashfunktion und die dadurch etwas veränderten Passwortvergleiche umzusetzen.</p>
+
+                    <p>Die Methode passwordEncoder() erstellt dann einen neuen PasswordEncoder, der BCrypt als Hashfunktion
+                        verwendet. Das ist ein recht aktuelles und momentan als sicher geltendes Hashverfahren. <br/>
+                        Durch die @Bean-Annotation wird der Rückgabewert der Methode für Autowiring an anderen Stellen verfügbar
+                        gemacht, z.B. damit Spring es als Parameter für <code>configureGlobal()</code> benutzen kann.</p>
+
+
+                    <hr/>
+
+
+                    <p class="h3">
+                        Beispieldaten
+                    </p>
+
+                    <p>
+
+                        Damit sich Nutzer einloggen können, müssen diese nun nur noch in der Datenbank vorhanden sein. 
+                        Dazu wird in der <code>import.sql</code> folgenes ergänzt: 
+                    </p>
+
+                    <pre><code class="sql">INSERT INTO users (username, password_hash, first_name, last_name, user_role) VALUES ('peter', '$2a$10$WoG5Z4YN9Z37EWyNCkltyeFr6PtrSXSLMeFWOeDUwcanht5CIJgPa', 'Peter', 'Parker', 'USER');
+INSERT INTO users (username, password_hash, first_name, last_name, user_role) VALUES ('bob', '$2a$10$WoG5Z4YN9Z37EWyNCkltyeFr6PtrSXSLMeFWOeDUwcanht5CIJgPa', 'Bob', 'Page', 'USER');
+</code></pre>
+
+                    <p>
+                        Die etwas kryptischen Texte im password_hash Feld beider Benutzer sind ein möglicher BCrypt Hash für den Text
+                        "password". Wenn andere Passwörter verwendet werden sollnen, kannst man z.B. unter 
+                        <a target="_blank" href="http://bcrypthashgenerator.apphb.com/">http://bcrypthashgenerator.apphb.com/</a>
+                        ein Passwort eingeben und einen entsprechenden Hash erhalten.
+                    </p>
+
+                    <hr/>
+
+
+                    <p class="h3">
+                        Ausprobieren
+                    </p>
+
+                    <p>
+                        Startet man die Anwendung nun wieder, kann man sich mit den beiden in der Datenbank hinterlegten Nutzern einloggen. 
+                    </p>
+
+                </div>
+                <hr>
+            </div>
+
+            <!--Schritt 13 - Controller-->
+            <div>
+                <div class="well">
+                    <h2>Schritt 13 - Autor in Blogeinträgen hinterlegen</h2>
+
+                    <p>
+                        Da nur angemeldete Nutzer neue BlogPosts erstellen können, macht es Sinn, auch in jedem Eintrag 
+                        zu hinterlegen, welcher Nutzer ihn erstellt hat.
+                    </p>
+
+                    <hr/>
+
+                    <p class="h3">
+                        Domänenmodell
+                    </p>
+
+                    <p>
+                        Die Klasse <code>BlogPost</code> wird dazu folgendermaßen angepasst:
+                    </p>
+
+                    <pre>
+<code class="java">public class BlogPost {
+    private final String id;
+    private final User author;
+    private final String title;
+    private final String text;
+
+    public BlogPost(String id, User author, String title, String text) {
+        this.id = id;
+        this.author = author;
+        this.title = title;
+        this.text = text;
+    }
+
+    //Getter für alle Felder bitte hier hin!
+}
+</code></pre>
+
+                    <p>
+                        In jedem BlogPost ist somit ein Nutzer hinterlegt.
+                    </p>
+
+                    <hr/>
+
+                    <p class="h3">
+                        Persistenzmodell
+                    </p>
+
+                    <p>
+                        Damit die Änderung auch in der Datenbank Anwendung findet, wird die Klasse 
+                        <code>BlogPostEntity</code> angepasst und folgendes Feld sowie entsprechende Getter und Setter hinzugefügt:
+                    </p>
+
+                    <pre>
+<code class="java">    @ManyToOne
+    private UserEntity author;
+</code></pre>
+
+                    <p>
+                        Außerdem wird der Konstruktor angepasst:
+                    </p>
+
+                    <pre><code class="java">public BlogPostEntity(UserEntity author, String title, String text) {
+    this.title = title;
+    this.author = author;
+    this.text = text;
+}
+</code></pre>
+
+                    <p>Die <span class="code-java">@ManyToOne</span>-Annotation gibt hierbei an, dass hier nicht eine vollständige
+                        UserEntity in einer Spalte gespeichert werden soll, sondern nur ein Verweis auf eine
+                        in der entsprechenden Tabelle gespeicherte UserEntity. <br/>
+                        Dieser Verweis wird in der Datenbank als Foreign Key-Spalte modelliert. Die Benennung dieser Spalte basiert
+                        auf
+                        dem Namen des Felds in BlogPostEntity sowie dem Namen des <span class="code-java">@Id</span>-Felds in
+                        UserEntity. <br/>
+                        In unserem Beispiel ergibt sich damit eine Spalte "author_username", die auf die "username"-Spalte der
+                        Tabelle
+                        "users" verweist.</p>
+
+
+                    <hr/>
+
+                    <p class="h3">
+                        Beispieldaten
+                    </p>
+
+                    <p>
+                        Damit in den Beispieldaten auch entsprechende Einträge vorhanden sind, wird die <code>import.sql</code> angepasst:
+                    </p>
+
+                    <pre>
+<code class="sql">INSERT INTO users (username, password_hash, first_name, last_name, user_role) VALUES ('peter', '$2a$10$WoG5Z4YN9Z37EWyNCkltyeFr6PtrSXSLMeFWOeDUwcanht5CIJgPa', 'Peter', 'Parker', 'USER');
+INSERT INTO users (username, password_hash, first_name, last_name, user_role) VALUES ('bob', '$2a$10$WoG5Z4YN9Z37EWyNCkltyeFr6PtrSXSLMeFWOeDUwcanht5CIJgPa', 'Bob', 'Page', 'USER');
+INSERT INTO blog_posts (id, author_username, title, text) VALUES (1, 'bob', 'mein erster eintrag', 'lorem ipsum dolor sit amet...');
+INSERT INTO blog_posts (id, author_username, title, text) VALUES (2, 'peter', 'mein zweiter eintrag', 'Wants pawn term, dare worsted ladle gull hoe lift wetter murder inner ladle cordage, honor itch offer lodge dock florist. ');
+</code></pre>
+
+
+                    <hr/>
+
+                    <p class="h3">
+                        Service
+                    </p>
+
+                    <p>
+                        Die Implementation von BlogService muss auch entsprechend angepasst werden.
+                        <br/> 
+                        Dafür muss BlogServiceImpl erstmal das UserRepository und den UserDetailsService kennen, dazu werden Instanzvariablen und Konstruktor angepasst:
+                    </p>
+
+                    <pre><code class="java">    private final BlogPostRepository blogPostRepository;
+    private final UserRepository userRepository;
+    private final UserDetailsService userDetailsService;
+
+    @Autowired
+    public BlogServiceImpl(BlogPostRepository blogPostRepository, UserRepository userRepository, UserDetailsService userDetailsService) {
+        this.blogPostRepository = blogPostRepository;
+        this.userRepository = userRepository;
+        this.userDetailsService = userDetailsService;
+    }</code></pre>
+
+                    <p>
+                        Außerdem wird die Methode <code>getAllPosts()</code> angepasst:
+                    </p>
+
+                    <pre><code class="java">    @Override
+    public List<BlogPost> getAllPosts() {
+        List&lt;BlogPost&gt; result = new LinkedList&lt;BlogPost&gt;();
+        for (BlogPostEntity blogPostEntity : blogPostRepository.findAll()) {
+            result.add(new BlogPost(
+                    blogPostEntity.getId().toString(),
+                    (User) userDetailsService.loadUserByUsername(blogPostEntity.getAuthor().getUsername()),
+                    blogPostEntity.getTitle(),
+                    blogPostEntity.getText()
+            ));
+        }
+        return result;
+    }</code></pre>
+
+                    <p>
+                        Die Methode befragt nun also den UserDetailsService (der von einem Benutzernamen auf ein Domänenobjekt User
+                        abbilden kann) nach dem korrekten
+                        User für die in der Datenbank als Autor hinterlegte UserEntity.
+                    </p>
+
+                    <p>
+                        <!-- Sauberer formulieren. [In einer groesseren Applikation waere das über interfaces besser regelt. hier nicht. -->
+                        Der Cast bei userDetailsService.loadUserByName() ist hier übrigens halbwegs legitim - man weiß, dass der
+                        UserDetailsService in dieser Anwendung auch immer nur ein User-Objekt zurück geben kann, darf und muss.
+                        <br/>
+                        Schöner wäre allerdings gewesen, wenn das UserDetailsService ein eigenes Interface implementieren würde,
+                        welches eindeutig sagt dass ein User-Objekt
+                        zurück geliefert wird. Dann hätten man dieses Interface statt des allgemeinen UserDetailsService in den
+                        BlogService injecten lassen können und bräuchten hier keinen Cast.
+                        <br/>
+                        Entsprechendes Refactoring ist hier dem motivierten Leser als Übung überlassen.
+                    </p>
+
+
+
+                    <p>
+                        Zusätzlich wird die Methode <code>createBlogPost()</code> geändert, damit diese den Nutzer auch speichert:
+                    </p>
+
+                    <pre><code class="java">@Override
+public BlogPost createBlogPost(BlogPost blogPost) {
+    UserEntity userEntity = userRepository.findOne(blogPost.getAuthor().getUsername());
+     
+    BlogPostEntity blogPostEntity = new BlogPostEntity(userEntity,blogPost.getTitle(), blogPost.getText());
+        
+    BlogPostEntity savedEntity = blogPostRepository.save(blogPostEntity);
+      
+    BlogPost saved = new BlogPost(savedEntity.getId().toString(),
+            (User) userDetailsService.loadUserByUsername(savedEntity.getAuthor().getUsername()),
+            savedEntity.getTitle(),
+            savedEntity.getText());
+    
+    return saved;
+}</code></pre>
+                    <p>
+                        Diese läd für den im <code>BlogPost</code> hinterlegten <code>User</code> die <code>UserEntity</code>, und fügt diese vor dem Speichern der <code>BlogPostEntity</code> hinzu.
+                    </p>
+
+
+                    <p class="h3">
+                        Controller
+                    </p>
+
+                    <p>
+                        Damit in den zu speichernden BlogPosts auch der aktuelle Nutzer hinterlegt ist, muss der <code>BlogController</code> angepasst werden.
+                        <br/>
+                        Dazu wird die Methode <code>saveNewPost()</code> angepasst:
+                    </p>
+                    <pre><code class="java">    @RequestMapping(value = "/new", method = RequestMethod.POST)
+    public String saveNewPost(@RequestParam String title,
+                              @RequestParam String text,
+                              @AuthenticationPrincipal User currentUser) {
+        BlogPost blogPost = new BlogPost(null, currentUser, title, text);
+        blogService.createBlogPost(blogPost);
+        return "redirect:/";
+    }</code></pre>
+
+                    <p>Dadurch, dass der Parameter currentUser als @AuthenticationPrincipal annotiert ist, weiß Spring, dass
+                        nicht irgendeinen Requestparameter gesucht ist, oder einen User in dieser Methode bearbeiten werden soll, 
+                        sondern wirklich der momentan eingeloggten User gebraucht wird.
+                        <br/>
+                        Mehr ist dafür nicht nötig!</p>
+
+
+                    <p class="h3">
+                        View
+                        <!-- Genauer beschreiben wo die Anpassung stattfindet!-->
+                    </p>
+
+                    <p>
+                        Damit die Autoren auch in der View zu sehen sind, muss <code>index.jsp</code> angepasst werden. 
+                        Dazu wird die Überschrift der BlogPosts folgendermaßen geändert:
+                    </p>
+
+                    <pre><code class="html">&lt;h2&gt;&lt;c:out value=&quot;${post.title}&quot;/&gt; (von &lt;c:out value=&quot;${post.author.fullName}&quot;/&gt;)&lt;/h2&gt;</code> </pre>
+
+
+
+                    <p class="h3">
+                        Ausprobieren
+                    </p>
+
+                    <p>
+                        Startet man die Anwendung nun wieder, ist bei jedem BlogEintrag der Nutzer hinterlegt.
+                    </p>
+
+                    <div class="row">
+                        <div class="col-sm-8 col-sm-offset-2">
+                            <img src="img/schritt_13.png" alt="Schritt_13" class="center-block img-responsive"/> 
+                        </div>
+                    </div>
+
+                </div>
+                <hr>
+            </div>
+
+            <!--Schritt 14 - Datenbank zwsichen Programmstarts beibehalten-->
+            <div>
+                <div class="well">
+                    <h2>Schritt 14 - Datenbank zwsichen Programmstarts beibehalten</h2>
+
+            <div>
+                <div class="well" style="background-image: linear-gradient(to bottom, #FFa0a0 0%, #ffe8e8 100%);">
+                    TODO!
+                    <br>
+                    Soweit ich das sehe klappt die Kombination aus "import.sql" und hibernate.ddl-auto=update <b>nicht</b> <br>
+                    Ist das Setting auf "update" gesetzt, wird die import.sql ignoriert. <br>
+                    Ist das Setting auf "create" gesetzt, wird die datenbank beim Start geloescht. <br>
+                </div>
+            </div>
+  
+
+                    <p>
+                        Bisher wird H2 als reine in-memory-Datenbank verwendet. Das führt dazu, dass bei jedem Programmstart
+                        eine
+                        komplett neue Datenbank erstellt wird und evtl. bereits
+                        vorhandene Daten verloren gehen.
+                        <br/>
+                        In diesem Schritt wird die nötige Konfiguration durchgeführt, um
+                        die Datenbank statt dessen in einer Datei unterzubringen, sodass
+                        die Inhalte zwischen Programmstarts erhalten bleiben.
+                    </p>
+
+                    <h3>application.properties</h3>
+
+                    <p>
+                        Die application.properties Datei muss um folgenede Zeilen ergänzt werden:
+                    </p>
+
+                    <pre>
+spring.jpa.hibernate.ddl-auto=update
+spring.datasource.url=jdbc:h2:file:./data/blog.h2db
+spring.datasource.driver-class-name=org.h2.Driver
+</pre>
+
+                    <p>
+                        Die erste Zeile sorgt dafür, dass die Tabellen für die Anwendung nur dann erstellt werden sollen, falls
+                        sie in
+                        der Datenbank nicht zum aktuellen Schema der Anwendung passen.
+                        <br/>
+                        Die zweite Zeile weist Spring Data an, als Datenbank eine H2-Verbindung zu verwenden, die auf eine
+                        Datenbank
+                        mit dem namen "blog.h2db" im Verzeichnis data zugreift.
+                        <br/>
+                        Die dritte Zeile benennt die Klasse, mit der die vorher beschriebe Datenbank geöffnet werden kann.
+                    </p>
+
+                    <h3>import.sql </h3>
+
+                    <p
+                        >Beim Programmstart wurden bisher grundsätzlich immer neue Zeilen für die beiden Beispielbenutzer und
+                        -Blogeinträge erstellt. Dies müssen nun als optional markiert werden.
+                        <br/>
+                        Der einfachste Weg dafür ist, die <code>import.sql</code> anzupassen und aus den INSERT-Statements jeweils
+                        MERGE-Statements
+                        zu machen. (Das ist ein H2DB-Spezifisches Feature und funktioniert bei anderen Datenbanken nicht!)
+                    </p>
+
+                    <pre><code class="sql">MERGE INTO users (username, password_hash, first_name, last_name, user_role) VALUES ('peter', '$2a$10$WoG5Z4YN9Z37EWyNCkltyeFr6PtrSXSLMeFWOeDUwcanht5CIJgPa', 'Peter', 'Parker', 'USER');
+MERGE INTO users (username, password_hash, first_name, last_name, user_role) VALUES ('bob', '$2a$10$WoG5Z4YN9Z37EWyNCkltyeFr6PtrSXSLMeFWOeDUwcanht5CIJgPa', 'Bob', 'Page', 'USER');
+                    
+MERGE INTO blog_posts (id, author_username, title, text) VALUES (1, 'bob', 'mein erster eintrag', 'lorem ipsum dolor sit amet...');
+MERGE INTO blog_posts (id, author_username, title, text) VALUES (2, 'peter', 'mein zweiter eintrag', 'Wants pawn term, dare worsted ladle gull hoe lift wetter murder inner ladle cordage, honor itch offer lodge dock florist. ');
+    </code></pre>
+
+                    <p>
+                        Die Standard-nutzer und Blogeinträge werden nun zwar bei jedem Programmstart wieder auf die Vorbelegung aus
+                        der
+                        import.sql zurückgesetzt, aber immerhin startet die Anwendung nun wieder.
+                    </p>
+
+
+                    <hr>
+
+                    <h3>Ausprobieren!</h3>
+
+
+                    <p>
+                        Starte das Programm mit mvn spring-boot:run und füge einen neuen Blogeintrag hinzu. Beende danach die Anwendung
+                        und starte sie neu. Der Blogeintrag ist weiterhin da!
+                    </p>
+                </div>
+                <hr>
+            </div>
+
+            <!--Schritt 15 - Form Validation-->
+            <div>
+                <div class="well">
+                    <h2>Schritt 15 - Form Validation</h2>
+
+                    <p>Momentan ist es möglich, das Formular zum Erstellen eines neuen Blogeintrags leer abzusenden. Im diesem Fall
+                        wird
+                        auch
+                        tatsächlich ein leerer Eintrag erstellt und taucht danach auf der Startseite auf.</p>
+
+                    <p>Schöner wäre es natürlich, wenn der Autor darauf hingewiesen würde dass alle Formularfelder ausgefüllt sein
+                        müssen und
+                        ein unvollständig ausgefülltes Formular niemals in der Datenbank landen kann.</p>
+
+                    <p>Hierfür wird Bean Validation verwendet. Dabei handelt es sich um einen Java EE-Standard, der z.B. vom
+                        Hibernate-Projekt implementiert wird.</p>
+
+                    <h3>Abhängigkeiten</h3>
+
+                    <p>Zunächst muss eine Bean Validation Implementation den Abhängigkeiten in der pom.xml hinzugefügt werden</p>
+                    <pre><code class="xml">&lt;dependency&gt;
+    &lt;groupId&gt;org.hibernate&lt;/groupId&gt;
+    &lt;artifactId&gt;hibernate-validator&lt;/artifactId&gt;
+    &lt;version&gt;5.1.3.Final&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+
+                    <h3>Controller</h3>
+
+                    <p>
+                        Um Bean Validation nutzen zu können, müssen die vom Benutzer gelieferten Formulareingaben zu einem Objekt
+                        zusammengefasst werden.
+                    </p>
+
+                    <p>
+                        Diese Art von Objekten wird im weiteren als 'Command-Objekt' bezeichnet und ist in der Regel noch einmal
+                        separat von den Domänen- und Persistenzmodellen der Anwendung.
+                    </p>
+
+                    <p>Innerhalb des Packages <code>de.unibielefeld.techfak.tdpe.jsp</code> wird eine neue Klasse "NewBlogPostCmd" hinzugefügt:</p>
+                    <pre><code class="java">public  class NewBlogPostCmd {
+    @NotBlank
+    private String title;
+    
+    @NotBlank
+    private String text;
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+}
+</code></pre>
+                    <p>
+                        Dabei handelt es sich um ein gewöhnliches <a target="_blank" href="https://de.wikipedia.org/wiki/Plain_Old_Java_Object"><i>POJO</i></a> ohne eigene Logik, welches einfach nur jeweils ein Feld
+                        zusammen  mit Gettern und Settern für jedes Formularfeld hat. 
+                        Die entsprechenden privaten Felder sind dabei mit Annotationen versehen, die
+                        angeben welche Eigenschaften der Eingabe erfüllt sein müssen, damit das jeweilige Feld als 
+                        'korrekt ausgefüllt' gelten kann.
+                    </p>
+
+                    <p>
+                        Die hier verwendete <span class="code-java">@NotBlank</span>-Annotation gibt an, dass das Feld ausgefüllt
+                        sein
+                        muss.
+                        <br/>
+                        Es existieren noch viele weitere, wie z.B. <span class="code-java">@Past</span>, was vorsieht dass ein
+                        eingegebenes Datum in der Vergangenheit liegen muss
+                        oder <span class="code-java">@CreditCardNumber</span> um anzugeben dass 
+                        eine Eingabe der Form einer Kreditkartennummer entsprechen soll.
+                    </p>
+
+                    <p>Außerdem müssen die beiden Methoden, die sich mit dem erstellen neuer Posts befassen, wie folgt angepasst werden:</p>
+                    <pre><code class="java">@Controller
+public class BlogController {
+    // ...stuff ...
+    @RequestMapping(value = "/new", method = RequestMethod.GET)
+    public String showNewPostForm(Model model) {
+        model.addAttribute("newBlogPostCmd", new NewBlogPostCmd());
+        return "newPostForm";
+    }
+
+    @RequestMapping(value = "/new", method = RequestMethod.POST)
+    public String saveNewPost(@Valid NewBlogPostCmd newBlogPostCmd,
+                              BindingResult bindingResult,
+                              Model model,
+                              @AuthenticationPrincipal User currentUser) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("newBlogPostCmd", newBlogPostCmd);
+            return "newPostForm";
+        } else {
+            BlogPost blogPost = new BlogPost(null, currentUser, newBlogPostCmd.getTitle(), newBlogPostCmd.getText());
+            blogService.createBlogPost(blogPost);
+            return "redirect:/";
+        }
+    }
+    //... stuff...
+}</code></pre>
+                    <p>
+                        Das waren einige Änderungen... Schrittweise:
+                    </p>
+
+                    <p>
+                        Die Methode zur Anzeige des Formulars stellt nun der View ein leeres NewBlogPostCmd zur Verfügung. Dies ist
+                        aufgrund gleich noch anfallender Änderungen an der <code>index.jsp</code> notwendig.
+                    </p>
+
+                    <p>
+                        Die saveNewPost()-Methode erhält nun nicht mehr die beiden Felder als einzelne Parameter, sondern stattdessen
+                        übergibt Spring der Methode ein mit den Benutzereingaben befülltes NewBlogPostCmd. 
+                        Dieses ist mit <span class="code-java">@Valid</span> annotiert, um Spring darüber zu informieren,
+                        dass die in NewBlogPostCmd hinterlegten Validierungen vor Aufruf von saveNewPost() durchgeführt werden müssen.
+                        Der unmittelbar darauf folgende BindingResult Parameter enthält die Ergebnisse der Validierung - also, welche
+                        Felder Fehler enthalten, und
+                        was für Fehlermeldungen auszugeben sind.
+                    </p>
+
+                    <p>
+                        Innerhalb der Methode müssen nun zwei verschiedene Fälle behandelt werden: <br/>
+                        Ist das Formular noch nicht korrekt ausgefüllt, soll es noch einmal angezeigt werden. 
+                        Die View soll dann das bereits existierende NewBlogPostCmd verwenden um die Benutzereingaben 
+                        im Formular als Vorbelegungen für alle Felder einzutragen. 
+                        <br/>
+                        Ist das Formular nicht fehlerhaft, soll statt dessen wie früher ein neuer Blogeintrag 
+                        gespeichert und der Benutzer auf die Startseite weitergeleitet werden.
+                    </p>
+
+                    <hr/>
+                    <h3>
+                        View
+                    </h3>
+
+                    <p>In der View für das zu validierende Formular müssen nun noch ggf. anfallende Fehlermeldungen angezeigt werden.
+                        Dazu werden wir unter anderem die bisher verwendeten <span class="code-html">&lt;input&gt;</span>-Elemente 
+                        durch Springs <span class="code-html">form:input</span> ersetzen.
+                        Dies erlaubt u.a., unterschiedliche CSS-Klassen an einem Formularfeld anzubringen, je nachdem ob es korrekt
+                        ausgefüllt wurde oder nicht.
+                        <br/>
+                        Die eigentliche Ausgabe der Fehlermeldungen erfolgt dann mit <span class="code-html">&lt;form:errors&gt;</span>.
+                    </p>
+
+                    <p>
+                        Das Formular in <code>newPostForm.jsp</code> wird dazu folgendermaßen angepasst:
+                    </p>
+
+                    <pre><code class="html">&lt;form:form method="POST" class="form" modelAttribute="newBlogPostCmd"&gt;
+    &lt;form:label path="title"&gt;Titel:&lt;/form:label&gt;
+    &lt;form:input path="title" placeholder="Titel" /&gt;
+    &lt;form:errors path="title" /&gt;
+    &lt;br&gt;
+    &lt;form:label path="text"&gt;Text:&lt;/form:label&gt;
+    &lt;form:textarea path="text" placeholder="Text" /&gt;
+    &lt;form:errors path="text" /&gt;
+    &lt;br&gt;
+    &lt;button &gt;Speichern&lt;/button&gt;
+&lt;/form:form&gt;
+</code></pre>
+                    <p>
+                        Gehen wir das neue Formular schrittweise durch:
+                    </p>
+
+                    <ul>
+                        <li>
+                            <p>
+                                Zunächt hat das <span class="code-html">&lt;form:form /&gt;</span>-Element einen weiteren 
+                                Parameter bekommen: mit <code>modelAttribute</code> geben wir an, in welchem Model-Attribut sich das 
+                                Commandobjekt befindet, auf das dieses Formular sich bezieht. Daher mussten auch in 
+                                <code>showNewPostForm()</code> ein leeres Commandobjekt erzeugen werden.
+                            </p>
+                        </li>
+                        <li>
+                            <p>
+                                Die <span class="code-html">&lt;input /&gt;</span>-tags wurden durch <span class="code-html">&lt;form:input /&gt;</span>
+                                ersetzt.
+                                Diese akzeptieren im <code>path</code>-Attribut den Namen des Attributs im Command-Objekt welches diesem Eingabefeld
+                                entspricht. Das wird unter anderem
+                                verwendet, um das Eingabefeld eventuell mit vorherigen Benutzereingaben vorzubelegen. Das <code>path</code>-Attribut
+                                des
+                                <span class="code-html">&lt;form:input /&gt;</span>
+                                wird in der entstehenden HTML-Ausgabe durch 'id' und 'name' ersetzt. Damit funktionieren z.B. die
+                                'for'-Attribute von Labels oder CSS-Styles weiterhin genauso wie vorher.
+                                <br/>
+                                Das <span class="code-html">&lt;form:input /&gt;</span>-Element könnte zusätzlich je nach Validierungsergebniss 
+                                des Formularfelds unterschiedliche CSS-Klassen haben. Dafür ließe sich statt dem <code>class</code>-Attribut 
+                                <code>cssClass</code> und <code>cssErrorClass</code> setzen.
+                            </p>
+                        </li>
+
+                        <li>
+
+                            <p>
+                                Die <span class="code-html">&lt;label /&gt;</span>-tags haben wir durch <span class="code-html">&lt;form:label /&gt;</span>
+                                ersetzt.
+                                Diese akzeptieren auch im <code>path</code>-Attribut den Namen des Attributs im Command-Objekt, welche sie repräsentieten.
+                                Das <code>path</code>-Attribut
+                                des
+                                <span class="code-html">&lt;form:label /&gt;</span>
+                                wird in der entstehenden HTML-Ausgabe durch 'for' ersetzt, sodass es weiterhin dem 
+                                entsprechenden <span class="code-html">&lt;input /&gt;</span> zugeordnet ist.
+                                <br/>
+                                Außerdem ließen sich wieder <code>cssClass</code> und <code>cssErrorClass</code> setzen.
+                            </p>
+                        </li>      
+                        <li>
+
+                            <p>
+                                Schließlich werden mit <span class="code-html">&lt;form:errors/&gt;</span> für die einzelnen Formularfelder
+                                jeweils die bei der Validierung aufgetretenen Fehlermeldungen ausgeben.
+                            </p>
+                        </li>
+                    </ul>
+                    <hr/>
+                    <h3>
+                        Ausprobieren
+                    </h3>
+
+                    <p>
+                        Tätigt man nun fehlerhafte Eingaben, erhält man Fehlermeldungen und es wird kein neuer BlogPost erstellt:
+                    </p>
+
+                    <div class="row">
+                        <div class="col-sm-6 col-sm-offset-3">
+                            <img src="img/schritt_15.png" alt="Schritt_15" class="center-block img-responsive"/> 
+                        </div>
+                    </div>
+
+                </div>
+                <hr/>
+            </div>
+
+
+            <!--Schritt 16 - Nach Autor suchen-->
+            <div>
+                <div class="well">
+                    <h2>Schritt 16 - Nach Autor suchen</h2>
+
+                    <p>
+                        Bisher werden auf der Startseite alle Einträge von allen Autoren angezeigt.
+                        <br>
+                        Eine einfache Erweiterung des Blogs wäre die Möglichkeit, nach Autoren zu suchen, und nur Einträge eines Autors zu zeigen.
+                    </p>
+
+                    <p>Für das filtern der Beiträge nach Autoren innerhalb der Anwendung gibt es zwei Möglichkeiten:</p>
+
+                    <ul>
+                        <li>
+                            Aus der Datenbank nur die BlogPosts für einen Autor abfragen.
+                            <br>
+                            Dies führt zu mehr Logik in der Datenbankschicht (hier Repository und Service), hält aber die Controller klein.
+                            Bei komplexeren Suchparametern führt dies aber sehr schnell zu einer sehr aufgeblähten und komplexen Datenbankschicht, 
+                            weshalb dies eher bei einfacheren Filtern empfohlen sei.
+                        </li>
+
+
+                        <li>
+                            Aus der Datenbank alle BlogPosts laden, und innerhalb des Controllers nach Autoren filtern.
+                            <br>
+                            Dies führt zu mehr Logik im Controller, die Datenbankschicht muss aber nicht verändert werden, und bleibt einfach und kompakt.
+                            Außerdem lassen sich komplexere Filter so oftmals schneller uns einfacher realisieren.
+                        </li>
+                    </ul>
+
+                    <p>
+                        Nachfolgend werden beide Möglichkeiten an zwei Beispielen implementiert.
+                        <br>
+                        Eine Suche nach Autoren wird mithilfe von Filtern im Controller realisiert, und Auswahl von 
+                        Autoren aus einer Liste mit Filtern in der Datenbankschicht.
+                    </p>
+
+                    <hr>
+                    <h3>Repository</h3>
+
+                    <p>Zunächst passen wir dazu das BlogPostRepository an, um nur BlogPosts für einen bestimmten Autor zu erhalten. 
+                        Dazu wird dem Repository folgende Methodendeklaration hinzugefügt:</p>
+                    <pre><code class="java">List&lt;BlogPostEntity&gt; findByAuthor(UserEntity author);</code></pre>
+
+                    <p>
+                        Spring generiert dabei anhand des Methodennamens für die Datenbank die passenden Querys, 
+                        ohne das der Programmierer diese selbst schreiben muss. Eine Liste von
+                        <!-- Link ist tot!-->
+                        <a target="_blank" href="http://docs.spring.io/spring-data/jpa/docs/current/reference/html/#jpa.query-methods">Möglichkeiten findet man 
+                        hier.</a>
+                    </p>
+                    <p>
+                        Durch den Rückgabetyp <code class="java">List&lt;BlogPostEntity&gt;</code> weiß Spring dabei, 
+                        das eine Liste von BlogPosts gesucht werden soll, wäre er <code class="java">BlogPostEntity</code>, 
+                        würde jeweils nur der erste Beitrag zurückgegeben werden.
+                    </p>
+                    <p>
+                        Anhand des Methodennamens wird dann bestimmt, wonach gesucht werden soll, in diesem Fall alle 
+                        für einen bestimmten Autor, der als Parameter übergeben wird.
+                        <br>
+                        Autor ist dabei der Name des Feldes innerhalb von BlogPostEntity, welches vom Typ User ist.
+                    </p>
+
+                    <hr>
+                    <h3>Service</h3>
+
+                    <p>
+                        Damit es später in der Anwendung auch möglich ist, BlogPosts für einen User zu laden, muss dafür das Interface <code>BlogService</code> eine Möglichkeit bieten.
+                        Dazu wird dieses um die Methode <code>List&lt;BlogPost&gt; getAll(User user)</code> erweitert.
+                    </p>
+
+                    <p>
+                        Diese Methode implementiert <code>BlogServiceImpl</code>:
+                    </p>
+                    <pre><code class="java">    @Override
+    public List&lt;BlogPost&gt; getAll(User user) {
+    UserEntity userEntity = userRepository.findOne(user.getUsername());
+        
+        List&lt;BlogPost&gt; result = new LinkedList&lt;BlogPost&gt;();
+        for (BlogPostEntity blogPostEntity : blogPostRepository.findByAuthor(userEntity)) {
+            result.add(new BlogPost(
+                    blogPostEntity.getId().toString(),
+                    (User) userDetailsService.loadUserByUsername(blogPostEntity.getAuthor().getUsername()),
+                    blogPostEntity.getTitle(),
+                    blogPostEntity.getText()
+            ));
+        }
+        return result;
+    }
+</code></pre>
+
+                    <p>
+                        Um eine Liste aller Nutzer anzeigen zu können, wird außerdem ein Interface für einen 
+                        UserService benötigt, welches eine Methode zum Laden aller Nutzer bereitstellt.
+                        <br>
+                        Dazu wird das neue Interface <code>UserService</code> im Package <code>de.unibielefeld.techfak.tdpe.jsp.domain</code> erstellt:
+                    </p>
+
+                    <pre><code class="java">public interface UserService {
+    List&lt;User&gt; getAll();
+    User getOne(String username);
+}
+</code></pre>
+
+                    <p>
+                        Dieses Interface wird nun in <code>BlogUserDetailsService</code>  implementiert:
+                        </p>
+                    
+                        <pre><code class="jave">@Override
+public List&lt;User&gt; getAll() {
+    List&lt;User&gt; users = new LinkedList&lt;&gt;();
+     
+    for (UserEntity userEntity : userRepository.findAll()) {
+        users.add(new User(userEntity.getUsername(),
+            userEntity.getFirstName(),
+            userEntity.getLastName(),
+            userEntity.getPasswordHash(),
+            userEntity.getUserRole())
+        );
+    }
+       
+    return users;
+}
+
+@Override
+public User getOne(String username) {
+    return (User) loadUserByUsername(username);
+}
+</code></pre>
+                        
+                    <hr>
+                    <h3>Controller</h3>
+
+
+                    <p>
+                        Damit eine Liste aller Autoren angezeigt werden kann, aus der der Nutzer dann einen bestimmten 
+                        auswählen kann, werden die Instanzvariablen und der Konstruktor von <code>BlogController</code> 
+                        um den eben erstellten Service erweitert.
+                    </p>
+                    
+                    <pre><code class="java">private final BlogService blogService;
+
+private final UserService userService;
+
+@Autowired
+public BlogController(BlogService blogService, UserService userService) {
+    this.blogService = blogService;
+    this.userService = userService;
+}    
+</code></pre>
+                    
+                    <p>
+                        Außerdem wird die <code>index()</code>-Methode erweitert, damit sie der View eine Liste 
+                        aller Autoren bereitstellt: 
+                    </p>
+                    
+                    <pre><code class="java">@RequestMapping("/")
+public String index(Model model) {
+    model.addAttribute("blogPosts", this.getBlogPosts());
+    model.addAttribute("authors", userService.getAll());
+    return "index";
+}
+</code></pre>
+                    
+                    <p>
+                        Um der View die entsprechenden Daten bereitzustellen, werden zusätzlich noch zwei Methoden implementiert.
+                    </p>
+                    
+                    <p>
+                        Einmal die Methode, um die Einträge für einen ausgewählten Nutzer anzuzeigen:
+                    </p>
+                    
+                    <pre><code class="java">@RequestMapping(value = "/byusername")
+public String showbyUsername(@RequestParam(value = "username") String username, Model model) {
+    User user = userService.getOne(username);
+        
+    List&lt;BlogPost&gt; blogPosts = blogService.getAll(user);
+    model.addAttribute("blogPosts", blogPosts);
+    model.addAttribute("authors", userService.getAll());
+    return "index";
+}
+</code></pre>
+                    
+                    <p>
+                        Sowie die Methode zur Freitextsuche:
+                    </p>
+                    
+                    <pre><code class="java">@RequestMapping(value = "/search")
+public String search(@RequestParam(value = "search_query") String searchQuery, Model model) {
+
+    List&lt;BlogPost&gt; searched = getBlogPosts().stream()
+        .filter(blogPost
+                -> blogPost.getAuthor().getFullName().contains(searchQuery)
+                || blogPost.getAuthor().getUsername().contains(searchQuery))
+        .collect(Collectors.toList());
+        
+        
+    model.addAttribute("blogPosts", searched);
+    model.addAttribute("authors", userService.getAll());
+    return "index";
+}
+</code></pre>
+
+                    <p>
+                        Diese Methode verwendet die mit Java 8 honzugekommenen <code>Streams</code>, um aus der 
+                        Liste aller BlogPosts die zu filtern, bei denen entweder der volle Name des Autors oder sein 
+                        UserName den Suchstring enthält.
+                        <br/>
+                        Die Funktion, nach der gefiltert wird, ist hierbei mit <i>Lambda Expressions</i> realisiert, 
+                        ließe sich jedoch gleichermaßen mit einer Instanz des Interfaces <code>Predicate</code> umsetzten.
+                        Dieses kann dabei entweder normal oder als anonyme Klasse implementiert werden.
+                    </p>
+                    
+                    
+                    <hr/>
+                    
+                    <h3>
+                        SecurityConfig
+                    </h3>
+                    
+                    <p>
+                        Bisher lassen sie Konfigurationen in der <code>SecurityConfig</code> öffentliche 
+                        Zugriffe nur auf "/" zu, für die Suche sind aber auch Zugriffe auf "/search" und "/byusername" nötig. 
+                        Die Zeile <code>.antMatchers("/").permitAll()</code> wird deshalb 
+                        abgeändert zu <code>.antMatchers("/","/search","/byusername").permitAll()</code>
+                        <br/>
+                        Dadurch sind Zugriffe auf die drei Pfade "/", "search" und "/byusername" für jeden Nutzer möglich.
+                    </p>
+                    
+                    <hr/>
+                    
+                    <h3>
+                        View
+                    </h3>
+                    
+                    <p>
+                        Damit der Nutzer nun auch suchen kann, sind noch passende Änderungen an der View nötig. 
+                    </p>
+                    
+                    <p>
+                        In der <code>index.jsp</code> wird dazu zuerst innerhalb des bodys eine neue Form hinzugefügt. 
+                        Diese stellt die Suchmaske für das Suchen nach Autoren dar:
+                    </p>
+                    <pre><code class="html">&lt;form method="GET" action="&lt;spring:url value="/search" /&gt;"&gt;
+    &lt;input name="search_query" placeholder="Suche..."/&gt;
+    &lt;button&gt;Suchen&lt;/button&gt;
+&lt;/form&gt;
+</code></pre>
+                    
+                    
+                    <p>
+                        Zusätzlich zu der Form wird noch eine Liste von Autoren hinzugefügt, die auf die jeweiligen Beiträge eines Autors verlinken:
+                    </p>
+                    <pre><code class="html">&lt;c:forEach items="${authors}" var="author"&gt;
+    &lt;spring:url value="/byusername" var="author_link"&gt;
+        &lt;spring:param name="username" value="${author.username}"/&gt;
+    &lt;/spring:url&gt;
+
+    &lt;a href="${author_link}"&gt;&lt;c:out value="${author.fullName}"/&gt;&lt;/a&gt;
+&lt;/c:forEach&gt;
+</code></pre>
+                    
+                    <p>
+                        Dies ist wieder eine forEach-Schleife, die über die im <code>BlogController</code> gefüllte 
+                        Liste der Autoren iteriert.
+                        Für jeden Autor wird dabei mit &lt;spring:url ...&gt; ein Link für diesen erstellt und in der 
+                        Variable <code>author_link</code> gespeichert. Dem Link wird dabei als Parameter
+                        <code>username</code> der UserName des Autors angehängt.
+                    </p>
+                    
+                </div>
+                <hr/>
+            </div>
+
+        </div>
+    </body>
+
