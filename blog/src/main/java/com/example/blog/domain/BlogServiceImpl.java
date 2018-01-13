@@ -15,13 +15,13 @@ import java.util.List;
 public class BlogServiceImpl implements BlogService {
     private final BlogPostRepository blogPostRepository;
     private final UserRepository userRepository;
-    private final UserDetailsService userDetailsService;
+    private final BlogUserDetailsService blogUserDetailsService;
 
     @Autowired
-    public BlogServiceImpl(BlogPostRepository blogPostRepository, UserRepository userRepository, UserDetailsService userDetailsService) {
+    public BlogServiceImpl(BlogPostRepository blogPostRepository, UserRepository userRepository, BlogUserDetailsService blogUserDetailsService) {
         this.blogPostRepository = blogPostRepository;
         this.userRepository = userRepository;
-        this.userDetailsService = userDetailsService;
+        this.blogUserDetailsService = blogUserDetailsService;
     }
 
     @Override
@@ -30,7 +30,7 @@ public class BlogServiceImpl implements BlogService {
         for (BlogPostEntity blogPostEntity: blogPostRepository.findAll()) {
             result.add(new BlogPost(
                     blogPostEntity.getId().toString(),
-                    (User) userDetailsService.loadUserByUsername(blogPostEntity.getAuthor().getUsername()),
+                    blogUserDetailsService.loadUserByUsername(blogPostEntity.getAuthor().getUsername()),
                     blogPostEntity.getTitle(),
                     blogPostEntity.getText()
             ));
@@ -46,7 +46,7 @@ public class BlogServiceImpl implements BlogService {
         BlogPostEntity savedEntity = blogPostRepository.save(blogPostEntity);
 
         BlogPost saved = new BlogPost(savedEntity.getId().toString(),
-                (User) userDetailsService.loadUserByUsername(savedEntity.getAuthor().getUsername()),
+                blogUserDetailsService.loadUserByUsername(savedEntity.getAuthor().getUsername()),
                 savedEntity.getTitle(), savedEntity.getText());
 
         return saved;
