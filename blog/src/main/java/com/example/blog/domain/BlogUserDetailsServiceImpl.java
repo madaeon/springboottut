@@ -9,6 +9,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedList;
+import java.util.List;
+
 @Service
 public class BlogUserDetailsServiceImpl implements BlogUserDetailsService {
 
@@ -44,5 +47,25 @@ public class BlogUserDetailsServiceImpl implements BlogUserDetailsService {
         userEntity.setUserRole("USER");
         userEntity.setPasswordHash(passwordEncoder.encode(user.getPassword()));
         userRepository.save(userEntity);
+    }
+    @Override
+    public List<User> getAll() {
+        List<User> users = new LinkedList<>();
+
+        for (UserEntity userEntity : userRepository.findAll()) {
+            users.add(new User(userEntity.getUsername(),
+                    userEntity.getFirstName(),
+                    userEntity.getLastName(),
+                    userEntity.getPasswordHash(),
+                    userEntity.getUserRole())
+            );
+        }
+
+        return users;
+    }
+
+    @Override
+    public User getOne(String username) {
+        return (User) loadUserByUsername(username);
     }
 }

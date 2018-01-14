@@ -28,7 +28,7 @@ public class BlogServiceImpl implements BlogService {
     public List<BlogPost> getAllPosts() {
         List<BlogPost> result = new LinkedList<>();
         for (BlogPostEntity blogPostEntity: blogPostRepository.findAll()) {
-            result.add(new BlogPost(
+            result.add(0, new BlogPost(
                     blogPostEntity.getId().toString(),
                     blogUserDetailsService.loadUserByUsername(blogPostEntity.getAuthor().getUsername()),
                     blogPostEntity.getTitle(),
@@ -50,6 +50,22 @@ public class BlogServiceImpl implements BlogService {
                 savedEntity.getTitle(), savedEntity.getText());
 
         return saved;
+    }
+
+    @Override
+    public List<BlogPost> getAll(User user) {
+        UserEntity userEntity = userRepository.findOne(user.getUsername());
+
+        List<BlogPost> result = new LinkedList<BlogPost>();
+        for (BlogPostEntity blogPostEntity : blogPostRepository.findByAuthor(userEntity)) {
+            result.add(new BlogPost(
+                    blogPostEntity.getId().toString(),
+                    blogUserDetailsService.loadUserByUsername(blogPostEntity.getAuthor().getUsername()),
+                    blogPostEntity.getTitle(),
+                    blogPostEntity.getText()
+            ));
+        }
+        return result;
     }
 
 

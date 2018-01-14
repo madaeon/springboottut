@@ -7,6 +7,14 @@
 <body>
 <h1>BlogPosts</h1>
 <a th:href="@{/new}">Neuer Eintrag</a>
+<form method="get" action="#" th:action="@{/search}">
+    <input name="search_query" placeholder="Suche..."/>
+    <button>Suchen</button>
+</form>
+<th:block th:each="author:${authors}">
+    <a th:href="@{/byusername(username=${author.username})}" th:text="${author.fullName}"/>
+    <br/>
+</th:block>
 <div>
     <table>
         <tr th:each="post:${blogPosts}">
